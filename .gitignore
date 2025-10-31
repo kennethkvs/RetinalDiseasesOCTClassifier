@@ -3,3 +3,7 @@ al3pvenv/
 .DS_Store
 .conda
 1000_images_only/
+*.aux
+*.log
+*.out
+*.synctex.gz
