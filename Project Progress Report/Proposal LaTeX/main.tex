@@ -5,6 +5,7 @@
 \usepackage[]{acl}
 \usepackage{times}
 \usepackage{latexsym}
+\usepackage{dirtree}
 
 % For proper rendering and hyphenation of words containing Latin characters (including in bib files)
 
@@ -92,6 +93,47 @@ Here, talk about the related work you encountered for your approach. Cite at lea
 \section{Dataset}
 
 You should write about your dataset here, following the guidelines regarding item 1. This section may be 0.5-1 pages. Depending on your specific dataset, you may want to include subsections for the preprocessing, annotation, etc.
+
+\subsection{Folder Structure}
+
+\dirtree{%
+  .1 Dataset.
+  .2 test.
+  .3 CNV.
+  .3 DME.
+  .3 DRUSEN.
+  .3 NORMAL.
+  .2 train.
+  .3 CNV.
+  .3 DME.
+  .3 DRUSEN.
+  .3 NORMAL.
+  .2 val.
+  .3 CNV.
+  .3 DME.
+  .3 DRUSEN.
+  .3 NORMAL.
+}
+
+\subsection{Preprocessing}
+
+Upon loading the images, each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and binned in the correct folders, which allowed for ease of labeling. The numbers for their corresponding disease is shown below:
+
+\begin{center}
+  \begin{tabular}{| c | c |}
+    \hline \hline
+    \textbf{CNV}    & 0 \\
+    \hline
+    \textbf{DME}    & 1 \\
+    \hline
+    \textbf{DRUSEN} & 2 \\
+    \hline
+    \textbf{CNV}    & 3 \\
+    \hline \hline
+  \end{tabular}
+\end{center}
+
+ADD MORE NOT DONE YET
 
 \section{Features}
 
