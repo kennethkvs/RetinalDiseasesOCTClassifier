@@ -147,10 +147,10 @@ Each image is labeled with an integer to represent its corresponding disease. Th
 Since we are doing a computer vision/image classification task, the feature were derived from the pixels of the images. The input for the model was images, which are comprised of pixels. Each pixel is denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
 
 \subsection{Learning Model}
-Afterwards we used a pretrained neural network that is already trained on images and rather than training it, we are adapting it to suit the situation of identifying the diseases. ResNet-50 was used, which is trained on ImageNet. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition and various additional visual related tasks such as processing text.
+Instead of training a model from scratch, we used a pretrained neural network and adapted it to our use case. The pretrained neural network selected was ResNet-50, which is trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
 
 \subsection{Features}
-In terms of selecting features, we did not directly do that. This is because it is not required as there no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. Same can be said for learning embeddings, as this is not a natural language processing task.
+In terms of selecting features, we did not directly do that. This is because it is not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
 
 \section{Implementation}
 
