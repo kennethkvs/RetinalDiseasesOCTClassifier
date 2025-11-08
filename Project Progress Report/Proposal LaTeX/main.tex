@@ -92,9 +92,11 @@ Here, talk about the related work you encountered for your approach. Cite at lea
 
 \section{Dataset}
 
-You should write about your dataset here, following the guidelines regarding item 1. This section may be 0.5-1 pages. Depending on your specific dataset, you may want to include subsections for the preprocessing, annotation, etc.
-
 \subsection{Folder Structure}
+
+When downloading the data, the dataset was partitioned as follows:
+
+\newpage
 
 \dirtree{%
   .1 Dataset.
@@ -117,7 +119,10 @@ You should write about your dataset here, following the guidelines regarding ite
 
 \subsection{Preprocessing}
 
-Upon loading the images, each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and binned in the correct folders, which allowed for ease of labeling. The numbers for their corresponding disease is shown below:
+Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly between \textit{train} when compared to both \textit{test} and \textit{val} (abbreviated to \textit{TV} pipeline for brevity). Both pipelines resized the images to 224 pixels by 224 pixels and normalized it with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. The values are the means and standard deviations for ImageNet, which is the dataset that ResNet is being trained on. The only difference is that before normalization, the \textit{train} dataset images might be flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust and diverse dataset. However, this is technically not considered an augmentation since we did not create new data (no data distribution changes).
+
+\subsection{Annotation}
+Each image is labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. The numbers for their corresponding disease is shown below:
 
 \begin{center}
   \begin{tabular}{| c | c |}
@@ -133,11 +138,19 @@ Upon loading the images, each image was labeled with an integer to represent its
   \end{tabular}
 \end{center}
 
-Adding onto this, we transformed the data by randomly flipping them horizontally. This allowed for the training set to have a more robust and diverse dataset. This is technically not considered an augmentation since we did not create new data.
-
 \section{Features}
 
-Describe any features you used for your model, or how your data was input to your model. Are you doing feature engineering or feature selection? Are you learning embeddings? Is it all part of one neural network? Refer to item 2. This may range from 0.25 pages to 0.5 pages.
+\textbf{Describe any features you used for your model, or how your data was input to your model. Are you doing feature engineering or feature selection? Are you learning embeddings? Is it all part of one neural network? Refer to item 2. This may range from 0.25 pages to 0.5 pages.}
+
+
+\subsection{Data Input}
+Since we are doing a computer vision/image classification task, the feature were derived from the pixels of the images. The input for the model was images, which are comprised of pixels. Each pixel is denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
+
+\subsection{Learning Model}
+Afterwards we used a pretrained neural network that is already trained on images and rather than training it, we are adapting it to suit the situation of identifying the diseases. ResNet-50 was used, which is trained on ImageNet. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition and various additional visual related tasks such as processing text.
+
+\subsection{Features}
+In terms of selecting features, we did not directly do that. This is because it is not required as there no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. Same can be said for learning embeddings, as this is not a natural language processing task.
 
 \section{Implementation}
 
