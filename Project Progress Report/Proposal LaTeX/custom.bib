@@ -1,70 +1,114 @@
 % Use this file for citations not found in the ACL Anthology (contained in "anthology.bib").
 
-@book{Aho:72,
-    author  = {Alfred V. Aho and Jeffrey D. Ullman},
-    title   = {The Theory of Parsing, Translation and Compiling},
-    year    = "1972",
-    volume  = "1",
-    publisher = {Prentice-Hall},
-    address = {Englewood Cliffs, NJ}
+@INPROCEEDINGS{9002415,
+  author={Das, Amrit and Giri, Rohan and Chourasia, Gunjan and Bala, A. Anilet},
+  booktitle={2019 International Conference on Communication and Electronics Systems (ICCES)}, 
+  title={Classification of Retinal Diseases Using Transfer Learning Approach}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={2080-2084},
+  keywords={Retina;Diseases;Conferences;Neural networks;Machine learning;Feature extraction;Imaging;Cognitive Intelligence;Deep Neural Networks;Eye;Knowledge Transfer;Medical Imaging},
+  doi={10.1109/ICCES45898.2019.9002415}
 }
 
-@book{APA:83,
-    author  = {{American Psychological Association}},
-    title   = {Publications Manual},
-    year    = "1983",
-    publisher = {American Psychological Association},
-    address = {Washington, DC}
+@Article{diagnostics13030433,
+  AUTHOR = {Özdaş, Mehmet Batuhan and Uysal, Fatih and Hardalaç, Fırat},
+  TITLE = {Classification of Retinal Diseases in Optical Coherence Tomography Images Using Artificial Intelligence and Firefly Algorithm},
+  JOURNAL = {Diagnostics},
+  VOLUME = {13},
+  YEAR = {2023},
+  NUMBER = {3},
+  ARTICLE-NUMBER = {433},
+  URL = {https://www.mdpi.com/2075-4418/13/3/433},
+  PubMedID = {36766537},
+  ISSN = {2075-4418},
+  ABSTRACT = {In recent years, the number of studies for the automatic diagnosis of biomedical diseases has increased. Many of these studies have used Deep Learning, which gives extremely good results but requires a vast amount of data and computing load. If the processor is of insufficient quality, this takes time and places an excessive load on the processor. On the other hand, Machine Learning is faster than Deep Learning and does not have a much-needed computing load, but it does not provide as high an accuracy value as Deep Learning. Therefore, our goal is to develop a hybrid system that provides a high accuracy value, while requiring a smaller computing load and less time to diagnose biomedical diseases such as the retinal diseases we chose for this study. For this purpose, first, retinal layer extraction was conducted through image preprocessing. Then, traditional feature extractors were combined with pre-trained Deep Learning feature extractors. To select the best features, we used the Firefly algorithm. In the end, multiple binary classifications were conducted instead of multiclass classification with Machine Learning classifiers. Two public datasets were used in this study. The first dataset had a mean accuracy of 0.957, and the second dataset had a mean accuracy of 0.954.},
+  DOI = {10.3390/diagnostics13030433}
 }
 
-@article{Chandra:81,
-	author = {Ashok K. Chandra and Dexter C. Kozen and Larry J. Stockmeyer},
-	year = "1981",
-	title = {Alternation},
-	journal = {Journal of the Association for Computing Machinery},
-	volume = "28",
-	number = "1",
-	pages = "114--133",
-	doi = "10.1145/322234.322243",
+@ARTICLE{Kermany2018-dc,
+  title     = "Identifying medical diagnoses and treatable diseases by
+               image-based deep learning",
+  author    = "Kermany, Daniel S and Goldbaum, Michael and Cai, Wenjia and
+               Valentim, Carolina C S and Liang, Huiying and Baxter, Sally L
+               and McKeown, Alex and Yang, Ge and Wu, Xiaokang and Yan,
+               Fangbing and Dong, Justin and Prasadha, Made K and Pei,
+               Jacqueline and Ting, Magdalene Y L and Zhu, Jie and Li,
+               Christina and Hewett, Sierra and Dong, Jason and Ziyar, Ian and
+               Shi, Alexander and Zhang, Runze and Zheng, Lianghong and Hou,
+               Rui and Shi, William and Fu, Xin and Duan, Yaou and Huu, Viet A
+               N and Wen, Cindy and Zhang, Edward D and Zhang, Charlotte L and
+               Li, Oulan and Wang, Xiaobo and Singer, Michael A and Sun,
+               Xiaodong and Xu, Jie and Tafreshi, Ali and Lewis, M Anthony and
+               Xia, Huimin and Zhang, Kang",
+  journal   = "Cell",
+  publisher = "Elsevier BV",
+  volume    =  172,
+  number    =  5,
+  pages     = "1122--1131.e9",
+  month     =  feb,
+  year      =  2018,
+  copyright = "http://www.elsevier.com/open-access/userlicense/1.0/",
+  language  = "en"
 }
 
-@inproceedings{andrew2007scalable,
-  title={Scalable training of {L1}-regularized log-linear models},
-  author={Andrew, Galen and Gao, Jianfeng},
-  booktitle={Proceedings of the 24th International Conference on Machine Learning},
-  pages={33--40},
-  year={2007},
+@ARTICLE{Miladinovic2024-og,
+  title    = "Evaluating deep learning models for classifying {OCT} images with
+              limited data and noisy labels",
+  author   = "Miladinovi{\'c}, Aleksandar and Biscontin, Alessandro and Aj{\v
+              c}evi{\'c}, Milo{\v s} and Kresevic, Simone and Accardo, Agostino
+              and Marangoni, Dario and Tognetto, Daniele and Inferrera, Leandro",
+  abstract = "The use of deep learning for OCT image classification could
+              enhance the diagnosis and monitoring of retinal diseases.
+              However, challenges like variability in retinal abnormalities,
+              noise, and artifacts in OCT images limit its clinical use. Our
+              study aimed to evaluate the performance of various deep learning
+              (DL) architectures in classifying retinal pathologies versus
+              healthy cases based on OCT images, under data scarcity and label
+              noise. We examined five DL architectures: ResNet18, ResNet34,
+              ResNet50, VGG16, and InceptionV3. Fine-tuning of the pre-trained
+              models was conducted on 5526 OCT images and reduced subsets down
+              to 21 images to evaluate performance under data scarcity. The
+              performance of models fine-tuned on subsets with label noise
+              levels of 10\%, 15\%, and 20\% was evaluated. All DL
+              architectures achieved high classification accuracy (> 90\%) with
+              training sets of 345 or more images. InceptionV3 achieved the
+              highest classification accuracy (99\%) when trained on the entire
+              training set. However, classification accuracy decreased and
+              variability increased as sample size decreased. Label noise
+              significantly affected model accuracy. Compensating for labeling
+              errors of 10\%, 15\%, and 20\% requires approximately 4, 9, and
+              14 times more images in the training set to reach the performance
+              of 345 correctly labeled images. The results showed that DL
+              models fine-tuned on sets of 345 or more OCT images can
+              accurately classify retinal pathologies versus healthy controls.
+              Our findings highlight that while mislabeling errors
+              significantly impact classification performance in OCT analysis,
+              this can be effectively mitigated by increasing the training
+              sample size. By addressing data scarcity and labeling errors, our
+              research aims to improve the real-world application and accuracy
+              of retinal disease management.",
+  journal  = "Sci. Rep.",
+  volume   =  14,
+  number   =  1,
+  pages    = "30321",
+  month    =  dec,
+  year     =  2024,
+  keywords = "CNN; Deep learning; OCT; Retina; Retinal imaging",
+  language = "en"
 }
 
-@book{Gusfield:97,
-    author  = {Dan Gusfield},
-    title   = {Algorithms on Strings, Trees and Sequences},
-    year    = "1997",
-    publisher = {Cambridge University Press},
-    address = {Cambridge, UK}
+@MISC{Reddy_2025-nr,
+  title        = "With casuality",
+  author       = "Reddy, Badduri Nagendra",
+  abstract     = "Explore and run machine learning code with Kaggle Notebooks |
+                  Using data from multiple data sources",
+  publisher    = "Kaggle",
+  month        =  oct,
+  year         =  2025,
+  howpublished = "\url{https://www.kaggle.com/code/nagendrareddy777/with-casuality}",
+  note         = "Accessed: 2025-11-9",
+  language     = "en"
 }
 
-@article{rasooli-tetrault-2015,
-    author    = {Mohammad Sadegh Rasooli and Joel R. Tetreault},
-    title     = {Yara Parser: {A} Fast and Accurate Dependency Parser},
-    journal   = {Computing Research Repository},
-    volume    = {arXiv:1503.06733},
-    year      = {2015},
-    url       = {http://arxiv.org/abs/1503.06733},
-    note    = {version 2}
-}
-
-@article{Ando2005,
-	Acmid = {1194905},
-	Author = {Ando, Rie Kubota and Zhang, Tong},
-	Issn = {1532-4435},
-	Issue_Date = {12/1/2005},
-	Journal = {Journal of Machine Learning Research},
-	Month = dec,
-	Numpages = {37},
-	Pages = {1817--1853},
-	Publisher = {JMLR.org},
-	Title = {A Framework for Learning Predictive Structures from Multiple Tasks and Unlabeled Data},
-	Volume = {6},
-	Year = {2005}
-}
