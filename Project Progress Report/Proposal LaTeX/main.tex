@@ -6,6 +6,10 @@
 \usepackage{times}
 \usepackage{latexsym}
 \usepackage{dirtree}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{graphicx}
+\graphicspath{ {./Images/} }
 
 % For proper rendering and hyphenation of words containing Latin characters (including in bib files)
 
@@ -23,6 +27,26 @@
 \usepackage{microtype}
 \usepackage{inconsolata}
 \usepackage{graphicx}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle={\small\ttfamily},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
 
 % If the title and author information does not fit in the area allocated, uncomment the following
 %
@@ -30,7 +54,8 @@
 %
 % and set <dim> to something 5cm or larger.
 
-\title{Group 76 Progress Report:}
+
+\title{Group 76 Progress Report: Classification of Retinal Diseases Using Optical Coherence Tomography (OCT) Images}
 
 
 \author{Elite Lu, Ishpreet Nagi, Kenneth Ong \\
@@ -79,6 +104,9 @@
 % \begin{abstract}
 % \end{abstract}
 
+
+
+
 % DO NOT REMOVE THIS LINE or else a lot of errors WILL APPEAR for line spacing
 \hbadness=100000
 
@@ -118,6 +146,33 @@ When downloading the data, the dataset was partitioned as follows:
   .3 NORMAL.
 }
 
+\subsection{Total Image Counts}
+
+\begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Type}          & \textbf{Disease} & \textbf{\# of Images} \\
+    \hline
+    \multirow{4}{*}{train} & CNV              & 37205                 \\ \cline{2-3}
+                           & DME              & 11348                 \\ \cline{2-3}
+                           & DRUSEN           & 8616                  \\ \cline{2-3}
+                           & NORMAL           & 26315                 \\
+    \hline
+    \multirow{4}{*}{test}  & CNV              & 242                   \\ \cline{2-3}
+                           & DME              & 242                   \\ \cline{2-3}
+                           & DRUSEN           & 242                   \\ \cline{2-3}
+                           & NORMAL           & 242                   \\
+    \hline
+    \multirow{4}{*}{val}   & CNV              & 8                     \\ \cline{2-3}
+                           & DME              & 8                     \\ \cline{2-3}
+                           & DRUSEN           & 8                     \\ \cline{2-3}
+                           & NORMAL           & 8                     \\
+    \hline
+  \end{tabular}
+\end{center}
+
+
+
 \subsection{Preprocessing}
 
 Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly between \textit{train} when compared to both \textit{test} and \textit{val} (abbreviated to \textit{TV} pipeline for brevity). Both pipelines resized the images to 224 pixels by 224 pixels and normalized it with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. The values are the means and standard deviations for ImageNet, which is the dataset that ResNet is being trained on. The only difference is that before normalization, the \textit{train} dataset images might be flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust and diverse dataset. However, this is technically not considered an augmentation since we did not create new data (no data distribution changes).
@@ -151,8 +206,6 @@ For the out features, there are four main features, which are the four categorie
 
 \section{Implementation}
 
-Describe your model and implementation here. Refer to item 4. This may take around a page.
-
 \subsection{Learning Model}
 Instead of training a model from scratch, we used a pretrained neural network and adapted it to our use case. The pretrained neural network selected was ResNet-50, which is trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
 
@@ -163,7 +216,7 @@ To implement the ResNet-50 based neural network, the first step was to instantia
 
 \subsubsection{Freezing and Unfreezing Layers}
 
-Upon initialization, the first thing is to freeze all the layers but the last layer. This is because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset we use is quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+Upon initialization, the first thing is to freeze all the layers but the last layer, the classifier layer. This is because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset we use is quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
 
 \subsubsection{Defining the Criterion and Optimizer}
 
@@ -177,84 +230,181 @@ The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) unde
 
 Since there are significantly fewer images categorized under these, we used all of them. There are only 32 images for validation spread evenly in the four diseases. The testing data has an even spread too, with 242 images for each disease, totaling 968 images.
 
-\subsubsection{Training}
+\subsubsection{Training and Validation}
 
-For training, we used 10 epochs for the 4000 selected images. We did not do cross validation because of the computation cost that would incur with the large dataset. While this does not seem that intense for the 4000 image dataset used in this milestone, the 80000 data points in the final dataset along with no fewer than 10 epochs would lead to hours of com.
+For training, we used 10 epochs for the 4000 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
 
 \subsubsection{Testing}
 
-
+After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model is written above it.
 
 
 \section{Results and Evaluation}
 
-How are you evaluating your model? What results do you have so far? What are your baselines? Refer to item 5. This may take around 0.5 pages.
+\subsection{Dataset Split}
+As previously stated, the found dataset was already organized neatly, with the data split into train, validation, and test folders. Following this preset procedure, during the preprocessing stage, we split the data into train/validation/test splits, with the composition of each being: 1000 images for training, 32 images for validation, and 968 images for testing. As a reminder, the training images were limited to only 1000 images at this stage to ensure fast computation, allowing for quicker model tuning. Since our dataset is so rich with images, we will not be opting to use cross-validation to allow for faster computation.
+
+\subsection{Training/Validation Phase}
+After the model is initialized, it is fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model’s performance is measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows us insight into the performance trend of the model and its overall journey through the training and validation phase, as we can witness the rate at which the model learns the trends in the dataset and becomes better at classifying the images through the loss and accuracy metrics. Our loss method is the cross-entropy loss, which we access through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy is calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. We are also storing the loss values calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help us further understand the model and its performance.
+
+\subsection{Test Phase}
+By this stage, the model has been evaluated once through the validation phase; however, it is evaluated once again, this time on the test split of the dataset via the testing phase. For the testing phase, we are simply using the performance metric of accuracy as our evaluation metric of the performance of the model, which is calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, we are also outputting a confusion matrix that visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This helps us better evaluate the performance of the model on the testing dataset, thus allowing us to better understand the ways to improve it.
+
+\subsection{Quantitative Results}
+So far, we have the following results, which will be acting as our baselines going forward. Results will be shown in the next page.
+
+
+
+
+\begin{lstlisting}
+  ------ Training and Validation Phase ------
+  Epoch [1/10]:
+  Training - Train Loss: 1.0887, Train Accuracy: 0.5433
+  Validation - Val Loss: 0.6531, Val Accuracy: 0.7812
+  Epoch [2/10]:
+  Training - Train Loss: 0.7874, Train Accuracy: 0.7192
+  Validation - Val Loss: 0.5057, Val Accuracy: 0.8750
+  Epoch [3/10]:
+  Training - Train Loss: 0.6839, Train Accuracy: 0.7508
+  Validation - Val Loss: 0.4508, Val Accuracy: 0.8438
+  Epoch [4/10]:
+  Training - Train Loss: 0.6904, Train Accuracy: 0.7365
+  Validation - Val Loss: 0.3884, Val Accuracy: 0.9062
+  Epoch [5/10]:
+  Training - Train Loss: 0.6213, Train Accuracy: 0.7712
+  Validation - Val Loss: 0.3650, Val Accuracy: 0.9375
+  Epoch [6/10]:
+  Training - Train Loss: 0.6065, Train Accuracy: 0.7668
+  Validation - Val Loss: 0.3354, Val Accuracy: 0.9062
+  Epoch [7/10]:
+  Training - Train Loss: 0.5787, Train Accuracy: 0.7800
+  Validation - Val Loss: 0.3003, Val Accuracy: 0.9062
+  Epoch [8/10]:
+  Training - Train Loss: 0.5600, Train Accuracy: 0.7983
+  Validation - Val Loss: 0.3019, Val Accuracy: 0.9062
+  Epoch [9/10]:
+  Training - Train Loss: 0.5657, Train Accuracy: 0.7867
+  Validation - Val Loss: 0.3093, Val Accuracy: 0.9062
+  Epoch [10/10]:
+  Training - Train Loss: 0.5466, Train Accuracy: 0.7920
+  Validation - Val Loss: 0.2906, Val Accuracy: 0.9062
+\end{lstlisting}
+\captionof{figure}{Training and validation loss and accuracy per epoch.}
+\label{fig:epoch_train_val}
+
+\begin{center}
+  \includegraphics[width=0.9\linewidth]{Images/TrainingValidationLoss.png}
+  \captionof{figure}{Training and validation loss over epochs.}
+  \label{fig:train_val_loss_full}
+  \includegraphics[width=0.9\linewidth]{Images/TestingConfusionMatrix.png}
+  \captionof{figure}{Confusion Matrix of the testing results.}
+  \label{fig:testing_full}
+\end{center}
+
+
+As one can clearly see in the results above, while our model is on the right track, there is a large margin for improvement.
 
 \section{Feedback and Plans}
 
-Write about your plans for the remainder of the project. This should include a discussion of the feedback you received from your TA, and how you plan to improve your approach. Reflect on your implementation and areas for improvement. Refer to item 6. This may be around 0.5 pages.
+Looking at the results of our evaluation and metrics, we believe that we are on the right track. It seems that we had successfully achieved an adequate model baseline that is trained on a small subset of the dataset.
 
-\section{Template Notes}
+\subsection{Image Processing and Augmentation}
 
-You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
+As mentioned in section 3, we did some image preprocessing that involved cropping, horizontally flipping, and normalizing the images. This is the first point of improvement that we think we could make. From our discussion with Parisa, we identified that the distribution of our training data is skewed towards CNV and Normal, which may cause overfitting and bias towards those labels. So, we could augment the training data for DME and Drusen so that there is about the same number of data for each category. Building upon this, we could also add more image transformations such as adding jitter and affine transformations to introduce imperfections in the image data, which could help make the model more robust through adversarial training.
 
-\subsection{Tables and figures}
+\subsection{Additional Metrics}
 
-See Table~\ref{citation-guide} for an example of a table and its caption.
-See Figure~\ref{fig:experiments} for an example of a figure and its caption.
+The second point of improvement is that we could add more metrics to help us evaluate our results better. Parisa mentioned that it might be useful to have precision, recall, and F-1 score as a metric in addition to the confusion matrix and accuracy that we currently have. Additionally, we believe that it might be worthwhile to also have the area under the ROC curve (AUC) as a metric for accuracy.
+
+\subsection{Hyperparameters and Dataset}
+
+Once we have implemented the improvements outlined above, our plan would be to train the model on a bigger subset of the training dataset (around 5000 data points) to find the best hyperparameters for the model. While training, we are aiming to optimize for the recall and area under the ROC curve for this project. This is because we want our classification model to minimize the number of false negatives, which in this case means that patients that actually have the disease should not go undiagnosed.
+
+Finally, we would do a final training run using the best hyperparameters on the entire training and validation dataset and then evaluate them using our testing dataset at the end.
 
 
-\subsection{Citations}
+% \section{Template Notes}
 
-\begin{table*}
-  \centering
-  \begin{tabular}{lll}
-    \hline
-    \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
-    \hline
-    \citep{Gusfield:97}       & \verb|\citep|           &                           \\
-    \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
-    \citet{Gusfield:97}       & \verb|\citet|           &                           \\
-    \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
-    \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
-    \hline
-  \end{tabular}
-  \caption{\label{citation-guide}
-    Citation commands supported by the style file.
-  }
-\end{table*}
+% You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
 
-Table~\ref{citation-guide} shows the syntax supported by the style files.
-We encourage you to use the natbib styles.
-You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
-You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
-You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
+% \subsection{Tables and figures}
 
-\subsection{References}
+% See Table~\ref{citation-guide} for an example of a table and its caption.
+% See Figure~\ref{fig:experiments} for an example of a figure and its caption.
 
-\nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
 
-Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
+% \subsection{Citations}
 
-\subsection{Equations}
+% \begin{table*}
+%   \centering
+%   \begin{tabular}{lll}
+%     \hline
+%     \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
+%     \hline
+%     \citep{Gusfield:97}       & \verb|\citep|           &                           \\
+%     \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
+%     \citet{Gusfield:97}       & \verb|\citet|           &                           \\
+%     \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
+%     \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
+%     \hline
+%   \end{tabular}
+%   \caption{\label{citation-guide}
+%     Citation commands supported by the style file.
+%   }
+% \end{table*}
 
-An example equation is shown below:
-\begin{equation}
-  \label{eq:example}
-  A = \pi r^2
-\end{equation}
+% Table~\ref{citation-guide} shows the syntax supported by the style files.
+% We encourage you to use the natbib styles.
+% You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
+% You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
+% You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
 
-Labels for equation numbers, sections, subsections, figures and tables
-are all defined with the \verb|\label{label}| command and cross references
-to them are made with the \verb|\ref{label}| command.
-This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
+% \subsection{References}
+
+% \nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
+
+% Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
+
+% \subsection{Equations}
+
+% An example equation is shown below:
+% \begin{equation}
+%   \label{eq:example}
+%   A = \pi r^2
+% \end{equation}
+
+% Labels for equation numbers, sections, subsections, figures and tables
+% are all defined with the \verb|\label{label}| command and cross references
+% to them are made with the \verb|\ref{label}| command.
+% This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
 
 
 % \section*{Limitations}
 
-\section*{Team Contributions}
+\section{Team Contributions}
 
-Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
+% Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
+
+\subsection{Elite}
+
+\begin{itemize}
+  \item Worked on the initial image opening and storing of data.
+  \item Wrote sections 1, 3, 4, and 5 of the document.
+\end{itemize}
+
+\subsection{Ishpreet}
+
+\begin{itemize}
+  \item Trained and tested the model.
+  \item Wrote section 6 of the document.
+\end{itemize}
+
+\subsection{Kenneth}
+
+\begin{itemize}
+  \item Worked on setting up the neural network and research for the start of the project.
+  \item Wrote sections 2 and 7 of the document.
+\end{itemize}
 
 % Bibliography entries for the entire Anthology, followed by custom entries
 %\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
