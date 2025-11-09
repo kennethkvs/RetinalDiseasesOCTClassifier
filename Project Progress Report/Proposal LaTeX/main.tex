@@ -7,7 +7,7 @@
 \usepackage{latexsym}
 \usepackage{dirtree}
 \usepackage{listings}
-
+\usepackage{multirow}
 \usepackage{graphicx}
 \graphicspath{ {./Images/} }
 
@@ -55,7 +55,7 @@
 % and set <dim> to something 5cm or larger.
 
 
-\title{Group 76 Progress Report:}
+\title{Group 76 Progress Report: Classification of Retinal Diseases Using Optical Coherence Tomography (OCT) Images}
 
 
 \author{Elite Lu, Ishpreet Nagi, Kenneth Ong \\
@@ -146,6 +146,33 @@ When downloading the data, the dataset was partitioned as follows:
   .3 NORMAL.
 }
 
+\subsection{Total Image Counts}
+
+\begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    \textbf{Type}          & \textbf{Disease} & \textbf{\# of Images} \\
+    \hline
+    \multirow{4}{*}{train} & CNV              &                       \\ \cline{2-3}
+                           & DME              &                       \\ \cline{2-3}
+                           & DRUSEN           &                       \\ \cline{2-3}
+                           & NORMAL           &                       \\
+    \hline
+    \multirow{4}{*}{test}  & CNV              & 242                   \\ \cline{2-3}
+                           & DME              & 242                   \\ \cline{2-3}
+                           & DRUSEN           & 242                   \\ \cline{2-3}
+                           & NORMAL           & 242                   \\
+    \hline
+    \multirow{4}{*}{val}   & CNV              & 8                     \\ \cline{2-3}
+                           & DME              & 8                     \\ \cline{2-3}
+                           & DRUSEN           & 8                     \\ \cline{2-3}
+                           & NORMAL           & 8                     \\
+    \hline
+  \end{tabular}
+\end{center}
+
+
+
 \subsection{Preprocessing}
 
 Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly between \textit{train} when compared to both \textit{test} and \textit{val} (abbreviated to \textit{TV} pipeline for brevity). Both pipelines resized the images to 224 pixels by 224 pixels and normalized it with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. The values are the means and standard deviations for ImageNet, which is the dataset that ResNet is being trained on. The only difference is that before normalization, the \textit{train} dataset images might be flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust and diverse dataset. However, this is technically not considered an augmentation since we did not create new data (no data distribution changes).
@@ -178,8 +205,6 @@ In terms of selecting the in features, we did not directly do that. This is beca
 For the out features, there are four main features, which are the four categories of dieases: CNV, DME, DRUSEN, and NORMAL.
 
 \section{Implementation}
-
-Describe your model and implementation here. Refer to item 4. This may take around a page.
 
 \subsection{Learning Model}
 Instead of training a model from scratch, we used a pretrained neural network and adapted it to our use case. The pretrained neural network selected was ResNet-50, which is trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
@@ -225,13 +250,10 @@ By this stage, the model has been evaluated once through the validation phase; h
 So far, we have the following results, which will be acting as our baselines going forward. Results will be shown in the next page.
 
 
-\onecolumn
+
 
 \begin{lstlisting}
-  --------------------------------------------------------------------------------------
-  ------------------------ Training and Validation Phase ----------------------
-  --------------------------------------------------------------------------------------
-  
+  ------ Training and Validation Phase ------
   Epoch [1/10]:
   Training - Train Loss: 1.0887, Train Accuracy: 0.5433
   Validation - Val Loss: 0.6531, Val Accuracy: 0.7812
@@ -262,17 +284,19 @@ So far, we have the following results, which will be acting as our baselines goi
   Epoch [10/10]:
   Training - Train Loss: 0.5466, Train Accuracy: 0.7920
   Validation - Val Loss: 0.2906, Val Accuracy: 0.9062
-  
 \end{lstlisting}
+\captionof{figure}{Training and validation loss and accuracy per epoch.}
+\label{fig:epoch_train_val}
+
 \begin{center}
-  \includegraphics[width=0.9\textwidth]{Images/TrainingValidationLoss.png}
+  \includegraphics[width=0.9\linewidth]{Images/TrainingValidationLoss.png}
   \captionof{figure}{Training and validation loss over epochs.}
   \label{fig:train_val_loss_full}
-  \includegraphics[width=0.9\textwidth]{Images/TestingConfusionMatrix.png}
+  \includegraphics[width=0.9\linewidth]{Images/TestingConfusionMatrix.png}
   \captionof{figure}{Confusion Matrix of the testing results.}
   \label{fig:testing_full}
 \end{center}
-\twocolumn
+
 
 As one can clearly see in the results above, while our model is on the right track, there is a large margin for improvement.
 
