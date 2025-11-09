@@ -153,10 +153,10 @@ When downloading the data, the dataset was partitioned as follows:
     \hline
     \textbf{Type}          & \textbf{Disease} & \textbf{\# of Images} \\
     \hline
-    \multirow{4}{*}{train} & CNV              &                       \\ \cline{2-3}
-                           & DME              &                       \\ \cline{2-3}
-                           & DRUSEN           &                       \\ \cline{2-3}
-                           & NORMAL           &                       \\
+    \multirow{4}{*}{train} & CNV              & 37205                 \\ \cline{2-3}
+                           & DME              & 11348                 \\ \cline{2-3}
+                           & DRUSEN           & 8616                  \\ \cline{2-3}
+                           & NORMAL           & 26315                 \\
     \hline
     \multirow{4}{*}{test}  & CNV              & 242                   \\ \cline{2-3}
                            & DME              & 242                   \\ \cline{2-3}
@@ -241,12 +241,16 @@ After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The f
 
 \section{Results and Evaluation}
 
+\subsection{Dataset Split}
 As previously stated, the found dataset was already organized neatly, with the data split into train, validation, and test folders. Following this preset procedure, during the preprocessing stage, we split the data into train/validation/test splits, with the composition of each being: 1000 images for training, 32 images for validation, and 968 images for testing. As a reminder, the training images were limited to only 1000 images at this stage to ensure fast computation, allowing for quicker model tuning. Since our dataset is so rich with images, we will not be opting to use cross-validation to allow for faster computation.
 
+\subsection{Training/Validation Phase}
 After the model is initialized, it is fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model’s performance is measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows us insight into the performance trend of the model and its overall journey through the training and validation phase, as we can witness the rate at which the model learns the trends in the dataset and becomes better at classifying the images through the loss and accuracy metrics. Our loss method is the cross-entropy loss, which we access through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy is calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. We are also storing the loss values calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help us further understand the model and its performance.
 
+\subsection{Test Phase}
 By this stage, the model has been evaluated once through the validation phase; however, it is evaluated once again, this time on the test split of the dataset via the testing phase. For the testing phase, we are simply using the performance metric of accuracy as our evaluation metric of the performance of the model, which is calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, we are also outputting a confusion matrix that visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This helps us better evaluate the performance of the model on the testing dataset, thus allowing us to better understand the ways to improve it.
 
+\subsection{Quantitative Results}
 So far, we have the following results, which will be acting as our baselines going forward. Results will be shown in the next page.
 
 
