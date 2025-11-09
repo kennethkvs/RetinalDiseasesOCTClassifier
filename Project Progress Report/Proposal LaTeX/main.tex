@@ -113,7 +113,7 @@
 
 \section{Introduction}
 
-Healthcare providers deal with many vision related illnesses such as DME (Diabetic Macular Edema), CNV (Choroidal Neovascularization), and drusen that impair vision. They utilize retinal scans to detect and determine the conditions. An issue that arises is the uniqueness of each ailment, as each condition varies in subtle ways. Correctly identifying retinal diseases can prove to be a challenge in a plethora of cases and with approximately 30 million OCT scans performed each year, this process can prove time-consuming for healthcare professionals. By having a classification model that can help speed up this process, we can allow healthcare professionals to focus their attention on helping more individuals requiring their aid.
+Healthcare providers deal with many vision related illnesses such as DME (Diabetic Macular Edema), CNV (Choroidal Neovascularization), and drusen that impair vision. They utilize retinal scans to detect and determine the conditions. An issue that arises is the uniqueness of each ailment, as each condition varies in subtle ways. Correctly identifying retinal diseases can prove to be a challenge in a plethora of cases and with approximately 30 million OCT scans performed each year, this process can prove time-consuming for healthcare professionals. By having a classification model that can help speed up this process, healthcare professionals are able to focus their attention on helping more individuals requiring their aid.
 
 \section{Related Work}
 
@@ -175,10 +175,10 @@ When downloading the data, the dataset was partitioned as follows:
 
 \subsection{Preprocessing}
 
-Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly between \textit{train} when compared to both \textit{test} and \textit{val} (abbreviated to \textit{TV} pipeline for brevity). Both pipelines resized the images to 224 pixels by 224 pixels and normalized it with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. The values are the means and standard deviations for ImageNet, which is the dataset that ResNet is being trained on. The only difference is that before normalization, the \textit{train} dataset images might be flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust and diverse dataset. However, this is technically not considered an augmentation since we did not create new data (no data distribution changes).
+Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly between \textit{train} when compared to both \textit{test} and \textit{val} (abbreviated to \textit{TV} pipeline for brevity). Both pipelines resized the images to 224 pixels by 224 pixels and normalized it with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. The values are the means and standard deviations for ImageNet, which is the dataset that ResNet is being trained on. The only difference is that before normalization, the \textit{train} dataset images might be flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust and diverse dataset. However, this is technically not considered an augmentation since no new data was created(no data distribution changes).
 
 \subsection{Annotation}
-Each image is labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. The numbers for their corresponding disease is shown below:
+Each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. The numbers for their corresponding disease is shown below:
 
 \begin{center}
   \begin{tabular}{| c | c |}
@@ -197,64 +197,61 @@ Each image is labeled with an integer to represent its corresponding disease. Th
 \section{Features}
 
 \subsection{Data Input}
-Since we are doing a computer vision/image classification task, the feature were derived from the pixels of the images. The input for the model was images, which are comprised of pixels. Each pixel is denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
+Since this is a computer vision/image classification task, the feature were derived from the pixels of the images. The input for the model was images, which are comprised of pixels. Each pixel was denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
 
 \subsection{Features}
-In terms of selecting the in features, we did not directly do that. This is because it is not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
+The selection of features was not done directly. This was because it was not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
 
-For the out features, there are four main features, which are the four categories of dieases: CNV, DME, DRUSEN, and NORMAL.
+For the out features, there are four main features, which are the four categories of diseases: CNV, DME, DRUSEN, and NORMAL.
 
 \section{Implementation}
 
 \subsection{Learning Model}
-Instead of training a model from scratch, we used a pretrained neural network and adapted it to our use case. The pretrained neural network selected was ResNet-50, which is trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
+Instead of training a model from scratch, a pretrained neural network was used and adapted it to the use case. The pretrained neural network selected was ResNet-50, which was trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
 
 \subsection{Implementation Steps}
 
 \subsubsection{Initializing the Neural Network}
-To implement the ResNet-50 based neural network, the first step was to instantiate a neural network that uses ResNet-50. This occurs after all the images have been preprocessed. This was called CustomResNet. For the initialization, the input features and classifiers are all defined. The initialization is very similar to typical setup for neural networks.
+To implement the ResNet-50 based neural network, the first step was to instantiate a neural network that uses ResNet-50. This occurs after all the images have been preprocessed. This was called CustomResNet. For the initialization, the input features and classifiers are all defined. The initialization was very similar to typical setup for neural networks.
 
 \subsubsection{Freezing and Unfreezing Layers}
 
-Upon initialization, the first thing is to freeze all the layers but the last layer, the classifier layer. This is because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset we use is quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+Upon initialization, the first thing was to freeze all the layers but the last layer, the classifier layer. This was because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
 
 \subsubsection{Defining the Criterion and Optimizer}
 
-Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, we used Cross Entropy from the torch.nn (neural network) library. For the optimizer, we used Adam (Adaptive Moment Estimation) from the torch.optim library. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam is 0.001, which is common for machine learning. The optimization is performed only on the parameters of the final layer since the other layers are currently frozen.
+Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
 
 \subsubsection{Training Data}
 
-The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution is not even, as CNV had significantly more images compared to the other diseases. For this milestone, we took 1000 random photos from each folder of the dataset, resulting in an even spread for each disease. This totaled 4000 images for model training for this milestone. We plan on using all the photos and additional augmentation for the categories with fewer images in the final model to prevent skewing and bias.
+The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution was not even, as CNV had significantly more images compared to the other diseases. For this milestone, 1000 random photos from each folder of the dataset was selected, resulting in an even spread for each disease. This totaled 4000 images for model training for this milestone. It is planned that all the photos will be used alongside additional augmentation for the categories with fewer images in the final model to prevent skewing and bias.
 
 \subsubsection{Validation and Test Data}
 
-Since there are significantly fewer images categorized under these, we used all of them. There are only 32 images for validation spread evenly in the four diseases. The testing data has an even spread too, with 242 images for each disease, totaling 968 images.
+Since there are significantly fewer images categorized under these, all images were used. There are only 32 images for validation spread evenly in the four diseases. The testing data has an even spread too, with 242 images for each disease, totaling 968 images.
 
 \subsubsection{Training and Validation}
 
-For training, we used 10 epochs for the 4000 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
+For training, a total of 10 epochs were performed for the 4000 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
 
 \subsubsection{Testing}
 
-After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model is written above it.
+After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model was written above it.
 
 
 \section{Results and Evaluation}
 
 \subsection{Dataset Split}
-As previously stated, the found dataset was already organized neatly, with the data split into train, validation, and test folders. Following this preset procedure, during the preprocessing stage, we split the data into train/validation/test splits, with the composition of each being: 1000 images for training, 32 images for validation, and 968 images for testing. As a reminder, the training images were limited to only 1000 images at this stage to ensure fast computation, allowing for quicker model tuning. Since our dataset is so rich with images, we will not be opting to use cross-validation to allow for faster computation.
+As previously stated, the found dataset was already organized neatly, with the data split into train, validation, and test folders. Following this preset procedure, during the preprocessing stage, the dataset was split into train/validation/test groups/splits, with the composition of each being: 1000 images for training, 32 images for validation, and 968 images for testing. As a reminder, the training images were limited to only 1000 images at this stage to ensure fast computation, allowing for quicker model tuning. Since the dataset was rich with images, cross-validation was not considered, which allowed for faster computation.
 
 \subsection{Training/Validation Phase}
-After the model is initialized, it is fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model’s performance is measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows us insight into the performance trend of the model and its overall journey through the training and validation phase, as we can witness the rate at which the model learns the trends in the dataset and becomes better at classifying the images through the loss and accuracy metrics. Our loss method is the cross-entropy loss, which we access through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy is calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. We are also storing the loss values calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help us further understand the model and its performance.
+After the model was initialized, it was fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model's performance was measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows insight into the performance trend of the model and its overall journey through the training and validation phase. The rate at which the model learns the trends in the dataset can be witnessed in its ability to better classify the images through the loss and accuracy metrics. The loss method was the cross-entropy loss, which is accessed through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy was calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. In conjunction with this, loss values are stored and calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help further understand the model and its performance.
 
 \subsection{Test Phase}
-By this stage, the model has been evaluated once through the validation phase; however, it is evaluated once again, this time on the test split of the dataset via the testing phase. For the testing phase, we are simply using the performance metric of accuracy as our evaluation metric of the performance of the model, which is calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, we are also outputting a confusion matrix that visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This helps us better evaluate the performance of the model on the testing dataset, thus allowing us to better understand the ways to improve it.
+By this stage, the model has been evaluated once through the validation phase; however, it was evaluated again, this time on the test split of the dataset via the testing phase. For the testing phase, the performance metric of accuracy was used as the evaluation metric of the performance of the model, which was calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, a confusion matrix was displayed, which visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This aided in easier comprehension and evaluation of the performance of the model on the testing dataset, thus presenting better methods of improvement.
 
 \subsection{Quantitative Results}
-So far, we have the following results, which will be acting as our baselines going forward. Results will be shown in the next page.
-
-
-
+The following results are shown below, which will be acting as the baselines going forward.
 
 \begin{lstlisting}
   ------ Training and Validation Phase ------
@@ -302,25 +299,25 @@ So far, we have the following results, which will be acting as our baselines goi
 \end{center}
 
 
-As one can clearly see in the results above, while our model is on the right track, there is a large margin for improvement.
+As seen above, while the model was proceeding as intended, there was a large margin for improvement.
 
 \section{Feedback and Plans}
 
-Looking at the results of our evaluation and metrics, we believe that we are on the right track. It seems that we had successfully achieved an adequate model baseline that is trained on a small subset of the dataset.
+Looking at the results of the evaluation and metrics, it appears that the model and the results are on the right track. The model appears to have successfully achieved an adequate model baseline that was trained on a small subset of the dataset.
 
 \subsection{Image Processing and Augmentation}
 
-As mentioned in section 3, we did some image preprocessing that involved cropping, horizontally flipping, and normalizing the images. This is the first point of improvement that we think we could make. From our discussion with Parisa, we identified that the distribution of our training data is skewed towards CNV and Normal, which may cause overfitting and bias towards those labels. So, we could augment the training data for DME and Drusen so that there is about the same number of data for each category. Building upon this, we could also add more image transformations such as adding jitter and affine transformations to introduce imperfections in the image data, which could help make the model more robust through adversarial training.
+As mentioned in section 3, some image preprocessing that involved cropping, horizontally flipping, and normalizing was performed on the images. This presents the first point of improvement that could be done. From the discussion with Parisa, it was identified that the distribution of the training data was skewed towards CNV and Normal, which may cause overfitting and bias towards those labels. As a result, augmenting the training data for DME and Drusen so that there was about the same number of data for each category could reduce bias and skew. Building upon this, another improvement is to add more image transformations such as adding jitter and affine transformations to introduce imperfections in the image data, which could help make the model more robust through adversarial training.
 
 \subsection{Additional Metrics}
 
-The second point of improvement is that we could add more metrics to help us evaluate our results better. Parisa mentioned that it might be useful to have precision, recall, and F-1 score as a metric in addition to the confusion matrix and accuracy that we currently have. Additionally, we believe that it might be worthwhile to also have the area under the ROC curve (AUC) as a metric for accuracy.
+The second point of improvement that can be done would be to add more metrics to help evaluate the results better. In the same conversation, Parisa mentioned that it might be useful to have precision, recall, and F-1 score as a metric in addition to the confusion matrix and accuracy that is currently presented. It would be worthwhile to have the area under the ROC curve (AUC) as a metric for accuracy in tangent with the other metrics mentioned.
 
 \subsection{Hyperparameters and Dataset}
 
-Once we have implemented the improvements outlined above, our plan would be to train the model on a bigger subset of the training dataset (around 5000 data points) to find the best hyperparameters for the model. While training, we are aiming to optimize for the recall and area under the ROC curve for this project. This is because we want our classification model to minimize the number of false negatives, which in this case means that patients that actually have the disease should not go undiagnosed.
+Once the improvements outlined above are implemented, the plan would be to train the model on a bigger subset of the training dataset (around 5000 data points) to find the best hyperparameters for the model. While training, the current goal is to optimize for the recall and area under the ROC curve for this project. It is required that the classification model minimizes the number of false negatives, which in this case means that patients that actually have the disease should not go undiagnosed.
 
-Finally, we would do a final training run using the best hyperparameters on the entire training and validation dataset and then evaluate them using our testing dataset at the end.
+Finally, a final training run using the best hyperparameters on the entire training and validation dataset is planned along, with an evaluation using the testing dataset at the end proceeding afterwards.
 
 
 % \section{Template Notes}
@@ -395,6 +392,7 @@ Finally, we would do a final training run using the best hyperparameters on the 
 \subsection{Ishpreet}
 
 \begin{itemize}
+  \item Wrote the model training code and the ResNet-50 neural network.
   \item Trained and tested the model.
   \item Wrote section 6 of the document.
 \end{itemize}
