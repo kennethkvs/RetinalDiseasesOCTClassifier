@@ -3,6 +3,8 @@ al3pvenv/
 .DS_Store
 .conda
 1000_images_only/
+5000_images_only/
+10000_images_only/
 *.aux
 *.log
 *.out
