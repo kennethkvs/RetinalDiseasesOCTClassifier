@@ -1,0 +1,280 @@
+\documentclass[11pt]{article}
+
+% Change "review" to "final" to generate the final (sometimes called camera-ready) version.
+% Change to "preprint" to generate a non-anonymous version with page numbers.
+\usepackage[utf8]{inputenc}
+\usepackage[]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{dirtree}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+\graphicspath{ {./Images/} }
+
+% For proper rendering and hyphenation of words containing Latin characters (including in bib files)
+
+% DISABLE IF WE CAN NOT USE ANOTHER FONT
+% I JUST HATE THE DEFAULT FONT - Elite
+\usepackage[sfdefault,lf]{carlito}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+% For Vietnamese characters
+% \usepackage[T5]{fontenc}
+% See https://www.latex-project.org/help/documentation/encguide.pdf for other character sets
+
+% This assumes your files are encoded as UTF8
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{graphicx}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle={\small\ttfamily},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+
+\title{Group 76 Final Report: Classification of Retinal Diseases Using Optical Coherence Tomography (OCT) Images}
+
+
+\author{Elite Lu, Ishpreet Nagi, Kenneth Ong \\
+  \texttt{\{lue13,nagii,salimk4\}@mcmaster.ca} }
+
+%\author{
+%  \textbf{First Author\textsuperscript{1}},
+%  \textbf{Second Author\textsuperscript{1,2}},
+%  \textbf{Third T. Author\textsuperscript{1}},
+%  \textbf{Fourth Author\textsuperscript{1}},
+%\\
+%  \textbf{Fifth Author\textsuperscript{1,2}},
+%  \textbf{Sixth Author\textsuperscript{1}},
+%  \textbf{Seventh Author\textsuperscript{1}},
+%  \textbf{Eighth Author \textsuperscript{1,2,3,4}},
+%\\
+%  \textbf{Ninth Author\textsuperscript{1}},
+%  \textbf{Tenth Author\textsuperscript{1}},
+%  \textbf{Eleventh E. Author\textsuperscript{1,2,3,4,5}},
+%  \textbf{Twelfth Author\textsuperscript{1}},
+%\\
+%  \textbf{Thirteenth Author\textsuperscript{3}},
+%  \textbf{Fourteenth F. Author\textsuperscript{2,4}},
+%  \textbf{Fifteenth Author\textsuperscript{1}},
+%  \textbf{Sixteenth Author\textsuperscript{1}},
+%\\
+%  \textbf{Seventeenth S. Author\textsuperscript{4,5}},
+%  \textbf{Eighteenth Author\textsuperscript{3,4}},
+%  \textbf{Nineteenth N. Author\textsuperscript{2,5}},
+%  \textbf{Twentieth Author\textsuperscript{1}}
+%\\
+%\\
+%  \textsuperscript{1}Affiliation 1,
+%  \textsuperscript{2}Affiliation 2,
+%  \textsuperscript{3}Affiliation 3,
+%  \textsuperscript{4}Affiliation 4,
+%  \textsuperscript{5}Affiliation 5
+%\\
+%  \small{
+%    \textbf{Correspondence:} \href{mailto:email@domain}{email@domain}
+%  }
+%}
+\setlength{\parindent}{0pt}
+\begin{document}
+\maketitle
+% \begin{abstract}
+% \end{abstract}
+
+
+
+
+% DO NOT REMOVE THIS LINE or else a lot of errors WILL APPEAR for line spacing
+\hbadness=100000
+
+
+\section{Introduction}
+
+Healthcare providers deal with many vision related illnesses such as Diabetic Macular Edema (DME), Choroidal Neovascularization (CNV), and drusen. The utilization of these retinal scans detect and determine these conditions. An issue that arises is the uniqueness of each ailment, as each condition varies in subtle ways. Correctly identifying retinal diseases can prove to be a challenge in a plethora of cases and with approximately 30 million OCT scans performed each year, this process can be time-consuming and labor-intensive for healthcare professionals. By having a classification model that can help speed up this process, healthcare professionals should be able to focus their attention on helping more individuals requiring their aid.
+
+\section{Related Work}
+
+% With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in recent years, it is not surprising that many researchers around the world have worked on the classification of retinal diseases using ML and/or DL methods. Most related works have approached the problem by incorporating transfer learning to perform multiclass or binary classification~\citep{Kermany2018-dc, Miladinovic2024-og,Reddy_2025-nr}.
+
+% As seen in the notebook created by the Kaggle user Badduri Nagendra Reddy~\citeyearpar{Reddy_2025-nr}, the fine-tuned model based on ResNet50 was able to achieve an impressive 98.97\% final test accuracy on the same dataset as the one used in this project. Similarly, the models defined in the papers typically build upon a pre-trained model, where the authors only unfreeze the weights of the last few layers and add a final classification layer~\citep{Kermany2018-dc,Miladinovic2024-og}.
+
+% Additionally, these studies experimented with different base models such as VGG16, InceptionV3, and other variations of ResNet, all of which were able to achieve mid-to-high 90\% accuracy~\citep{9002415,Kermany2018-dc,Miladinovic2024-og}. In contrast, the paper by Özdaş et al.~\citeyearpar{diagnostics13030433} outlined an interesting approach using the Firefly algorithm combined with transfer learning models to extract features from images, followed by classical ML classifiers for binary classification, achieving 95.7\% accuracy on their dataset.
+
+
+\section{Dataset}
+
+\subsection{Folder Structure}
+
+When downloading the data, the dataset was partitioned as follows:
+
+\dirtree{%
+    .1 Dataset.
+    .2 test.
+    .3 CNV.
+    .3 DME.
+    .3 DRUSEN.
+    .3 NORMAL.
+    .2 train.
+    .3 CNV.
+    .4 augmented.
+    .3 DME.
+    .4 augmented.
+    .3 DRUSEN.
+    .4 augmented.
+    .3 NORMAL.
+    .4 augmented.
+    .2 val.
+    .3 CNV.
+    .3 DME.
+    .3 DRUSEN.
+    .3 NORMAL.
+}
+
+\vspace*{5cm} % REMOVE IF WE DONT NEED MORE SPACE
+
+The new added folders for the training data, augmented, contains the augmented image data for each category. The reason for this will be elaborated in the \textbf{Data Augmentation} section.
+
+\subsection{Initial Image Counts}
+
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Type}          & \textbf{Disease} & \textbf{\# of Images} \\
+        \hline
+        \multirow{4}{*}{train} & CNV              & 37205                 \\ \cline{2-3}
+                               & DME              & 11348                 \\ \cline{2-3}
+                               & DRUSEN           & 8616                  \\ \cline{2-3}
+                               & NORMAL           & 26315                 \\
+        \hline
+        \multirow{4}{*}{test}  & CNV              & 242                   \\ \cline{2-3}
+                               & DME              & 242                   \\ \cline{2-3}
+                               & DRUSEN           & 242                   \\ \cline{2-3}
+                               & NORMAL           & 242                   \\
+        \hline
+        \multirow{4}{*}{val}   & CNV              & 8                     \\ \cline{2-3}
+                               & DME              & 8                     \\ \cline{2-3}
+                               & DRUSEN           & 8                     \\ \cline{2-3}
+                               & NORMAL           & 8                     \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Data Augmentation}
+
+One of the encountered problems with the dataset is the class imbalance. As seen in the \textbf{Initial Image Counts} table, the number of images vary drastically. For example, CNV has nearly 4.5 times the amount of images the DRUSEN class has. Because of this, the model will be biased towards the classes with more images, thus resulting in poor performance. To mitigate this, data augmentation was performed on the training dataset to increase the number of images such that each class has the same number of images. This was done by performing the following random actions:
+
+\begin{lstlisting}
+augmentation_transforms = transforms.Compose([
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(50),
+        transforms.RandomResizedCrop(size=224, scale=(0.8, 1.0)),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2),
+    ])
+\end{lstlisting}
+
+This augmentation process includes randomly flipping the image horizontally, randomly rotating the image by up to 50 degrees, randomly cropping and resizing the image, and randomly changing the contrast and brightness of the image. By performing this, not only will the dataset be more robust as a whole, but the model will less likely to overfit or have bias towards a certain class.
+
+As a result, the new image counts after augmentation are as follows:
+
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{Type}          & \textbf{Disease} & \textbf{\# of Images} \\
+        \hline
+        \multirow{4}{*}{train} & CNV              & 37205                 \\ \cline{2-3}
+                               & DME              & 37205                 \\ \cline{2-3}
+                               & DRUSEN           & 37205                 \\ \cline{2-3}
+                               & NORMAL           & 37205                 \\
+        \hline
+        \multirow{4}{*}{test}  & CNV              & 242                   \\ \cline{2-3}
+                               & DME              & 242                   \\ \cline{2-3}
+                               & DRUSEN           & 242                   \\ \cline{2-3}
+                               & NORMAL           & 242                   \\
+        \hline
+        \multirow{4}{*}{val}   & CNV              & 8                     \\ \cline{2-3}
+                               & DME              & 8                     \\ \cline{2-3}
+                               & DRUSEN           & 8                     \\ \cline{2-3}
+                               & NORMAL           & 8                     \\
+        \hline
+    \end{tabular}
+\end{center}
+
+This results in the training dataset having a total of 148820 images.
+
+% \subsection{Preprocessing}
+
+% Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly for the \textit{train} dataset when compared to both \textit{test} and \textit{val} datasets. Both pipelines resized the images to 224 pixels by 224 pixels and normalized them with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. Since we are using ResNet50 as the base model, the values for the mean and standard deviation come from ImageNet's preset values, which is the dataset that ResNet is being trained on. The only difference in the preprocessing pipeline is that before normalization, the \textit{train} dataset images might be horizontally flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust dataset. However, this is technically not considered an augmentation since no new data was created (no data distribution changes).
+
+% \subsection{Annotation}
+% Each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. When assigning labels to the dataset, we use the following mapping:
+
+% \begin{center}
+%     \begin{tabular}{| c | c |}
+%         \hline \hline
+%         \textbf{CNV}    & 0 \\
+%         \hline
+%         \textbf{DME}    & 1 \\
+%         \hline
+%         \textbf{DRUSEN} & 2 \\
+%         \hline
+%         \textbf{NORMAL} & 3 \\
+%         \hline \hline
+%     \end{tabular}
+% \end{center}
+
+% \section{Features}
+
+% \subsection{Data Input}
+% Since this is a computer vision/image classification task, the features were derived from the pixels of the images. Each pixel was denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
+
+% \subsection{Features}
+% The selection of features was not done directly. This was because it was not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
+
+% For the output features, there are four main features, which are the four categories of diseases: CNV, DME, DRUSEN, and NORMAL.
+
+% \section{Implementation}
+
+% \subsection{Learning Model}
+% Instead of training a model from scratch, a pretrained neural network was used and adapted it to the use case. The pretrained neural network selected was ResNet-50, which was trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
+
+% \subsection{Implementation Steps}
+
+% \subsubsection{Initializing the Neural Network}
+% To implement the ResNet-50 based neural network, the first step was to instantiate a neural network that uses ResNet-50. This occurs after all the images have been preprocessed. This was called CustomResNet. For the initialization, the input features and classifiers are all defined. The initialization was very similar to typical setup for neural networks.
+
+% \subsubsection{Freezing and Unfreezing Layers}
+
+% Upon initialization, the first thing was to freeze all the layers but the last layer, the classifier layer. This was because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+
+% \subsubsection{Defining the Criterion and Optimizer}
+
+% Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
+
+
+\end{document}
