@@ -1,0 +1,47 @@
+\begin{thebibliography}{5}
+\providecommand{\natexlab}[1]{#1}
+
+\bibitem[{Das et~al.(2019)Das, Giri, Chourasia, and Bala}]{9002415}
+Amrit Das, Rohan Giri, Gunjan Chourasia, and A.~Anilet Bala. 2019.
+\newblock \href {https://doi.org/10.1109/ICCES45898.2019.9002415}
+  {Classification of retinal diseases using transfer learning approach}.
+\newblock In \emph{2019 International Conference on Communication and
+  Electronics Systems (ICCES)}, pages 2080--2084.
+
+\bibitem[{Kermany et~al.(2018)Kermany, Goldbaum, Cai, Valentim, Liang, Baxter,
+  McKeown, Yang, Wu, Yan, Dong, Prasadha, Pei, Ting, Zhu, Li, Hewett, Dong,
+  Ziyar, Shi, Zhang, Zheng, Hou, Shi, Fu, Duan, Huu, Wen, Zhang, Zhang, Li,
+  Wang, Singer, Sun, Xu, Tafreshi, Lewis, Xia, and Zhang}]{Kermany2018-dc}
+Daniel~S Kermany, Michael Goldbaum, Wenjia Cai, Carolina C~S Valentim, Huiying
+  Liang, Sally~L Baxter, Alex McKeown, Ge~Yang, Xiaokang Wu, Fangbing Yan,
+  Justin Dong, Made~K Prasadha, Jacqueline Pei, Magdalene Y~L Ting, Jie Zhu,
+  Christina Li, Sierra Hewett, Jason Dong, Ian Ziyar, and 20 others. 2018.
+\newblock Identifying medical diagnoses and treatable diseases by image-based
+  deep learning.
+\newblock \emph{Cell}, 172(5):1122--1131.e9.
+
+\bibitem[{Miladinovi{\'c} et~al.(2024)Miladinovi{\'c}, Biscontin, Aj{\v
+  c}evi{\'c}, Kresevic, Accardo, Marangoni, Tognetto, and
+  Inferrera}]{Miladinovic2024-og}
+Aleksandar Miladinovi{\'c}, Alessandro Biscontin, Milo{\v s} Aj{\v c}evi{\'c},
+  Simone Kresevic, Agostino Accardo, Dario Marangoni, Daniele Tognetto, and
+  Leandro Inferrera. 2024.
+\newblock Evaluating deep learning models for classifying {OCT} images with
+  limited data and noisy labels.
+\newblock \emph{Sci. Rep.}, 14(1):30321.
+
+\bibitem[{Reddy(2025)}]{Reddy_2025-nr}
+Badduri~Nagendra Reddy. 2025.
+\newblock With casuality.
+\newblock \url{https://www.kaggle.com/code/nagendrareddy777/with-casuality}.
+\newblock Accessed: 2025-11-9.
+
+\bibitem[{Özdaş et~al.(2023)Özdaş, Uysal, and
+  Hardalaç}]{diagnostics13030433}
+Mehmet~Batuhan Özdaş, Fatih Uysal, and Fırat Hardalaç. 2023.
+\newblock \href {https://doi.org/10.3390/diagnostics13030433} {Classification
+  of retinal diseases in optical coherence tomography images using artificial
+  intelligence and firefly algorithm}.
+\newblock \emph{Diagnostics}, 13(3).
+
+\end{thebibliography}

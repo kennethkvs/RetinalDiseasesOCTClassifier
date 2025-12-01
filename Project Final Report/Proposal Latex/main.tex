@@ -120,9 +120,9 @@ Healthcare providers deal with many vision related illnesses such as Diabetic Ma
 
 \section{Related Work}
 
-% With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in recent years, it is not surprising that many researchers around the world have worked on the classification of retinal diseases using ML and/or DL methods. Most related works have approached the problem by incorporating transfer learning to perform multiclass or binary classification~\citep{Kermany2018-dc, Miladinovic2024-og,Reddy_2025-nr}.
+With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in recent years, it is not surprising that many researchers around the world have worked on the classification of retinal diseases using ML and/or DL methods. Most related works have approached the problem by incorporating transfer learning to perform multiclass or binary classification~\citep{Kermany2018-dc, Miladinovic2024-og,Reddy_2025-nr}.
 
-% As seen in the notebook created by the Kaggle user Badduri Nagendra Reddy~\citeyearpar{Reddy_2025-nr}, the fine-tuned model based on ResNet50 was able to achieve an impressive 98.97\% final test accuracy on the same dataset as the one used in this project. Similarly, the models defined in the papers typically build upon a pre-trained model, where the authors only unfreeze the weights of the last few layers and add a final classification layer~\citep{Kermany2018-dc,Miladinovic2024-og}.
+As seen in the notebook created by the Kaggle user Badduri Nagendra Reddy~\citeyearpar{Reddy_2025-nr}, the fine-tuned model based on ResNet50 was able to achieve an impressive 98.97\% final test accuracy on the same dataset as the one used in this project. Similarly, the models defined in the papers typically build upon a pre-trained model, where the authors only unfreeze the weights of the last few layers and add a final classification layer~\citep{Kermany2018-dc,Miladinovic2024-og}.
 
 % Additionally, these studies experimented with different base models such as VGG16, InceptionV3, and other variations of ResNet, all of which were able to achieve mid-to-high 90\% accuracy~\citep{9002415,Kermany2018-dc,Miladinovic2024-og}. In contrast, the paper by Özdaş et al.~\citeyearpar{diagnostics13030433} outlined an interesting approach using the Firefly algorithm combined with transfer learning models to extract features from images, followed by classical ML classifiers for binary classification, achieving 95.7\% accuracy on their dataset.
 
@@ -227,54 +227,246 @@ As a result, the new image counts after augmentation are as follows:
 
 This results in the training dataset having a total of 148820 images.
 
-% \subsection{Preprocessing}
+\subsection{Preprocessing}
 
-% Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly for the \textit{train} dataset when compared to both \textit{test} and \textit{val} datasets. Both pipelines resized the images to 224 pixels by 224 pixels and normalized them with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. Since we are using ResNet50 as the base model, the values for the mean and standard deviation come from ImageNet's preset values, which is the dataset that ResNet is being trained on. The only difference in the preprocessing pipeline is that before normalization, the \textit{train} dataset images might be horizontally flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust dataset. However, this is technically not considered an augmentation since no new data was created (no data distribution changes).
+Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly for the \textit{train} dataset when compared to both \textit{test} and \textit{val} datasets. Both pipelines resized the images to 224 pixels by 224 pixels and normalized them with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. Since we are using ResNet50 as the base model, the values for the mean and standard deviation come from ImageNet's preset values, which is the dataset that ResNet is being trained on. The only difference in the preprocessing pipeline is that before normalization, the \textit{train} dataset images might be horizontally flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust dataset. However, this is technically not considered an augmentation since no new data was created (no data distribution changes).
 
-% \subsection{Annotation}
-% Each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. When assigning labels to the dataset, we use the following mapping:
+\subsection{Annotation}
+Each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. When assigning labels to the dataset, we use the following mapping:
+
+\begin{center}
+    \begin{tabular}{| c | c |}
+        \hline \hline
+        \textbf{CNV}    & 0 \\
+        \hline
+        \textbf{DME}    & 1 \\
+        \hline
+        \textbf{DRUSEN} & 2 \\
+        \hline
+        \textbf{NORMAL} & 3 \\
+        \hline \hline
+    \end{tabular}
+\end{center}
+
+\section{Features}
+
+\subsection{Data Input}
+Since this is a computer vision/image classification task, the features were derived from the pixels of the images. Each pixel was denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
+
+\subsection{Features}
+The selection of features was not done directly. This was because it was not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
+
+For the output features, there are four main features, which are the four categories of diseases: CNV, DME, DRUSEN, and NORMAL.
+
+\section{Implementation}
+
+\subsection{Learning Model}
+Instead of training a model from scratch, a pretrained neural network was used and adapted it to the use case. The pretrained neural network selected was ResNet-50, which was trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
+
+\subsection{Implementation Steps}
+
+\subsubsection{Initializing the Neural Network}
+To implement the ResNet-50 based neural network, the first step was to instantiate a neural network that uses ResNet-50. This occurs after all the images have been preprocessed. This was called CustomResNet. For the initialization, the input features and classifiers are all defined. The initialization was very similar to typical setup for neural networks.
+
+\subsubsection{Freezing and Unfreezing Layers}
+
+Upon initialization, the first thing was to freeze all the layers but the last layer, the classifier layer. This was because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+
+\subsubsection{Defining the Criterion and Optimizer}
+
+Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
+
+\subsubsection{Training Data}
+
+The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution was not even, as CNV had significantly more images compared to the other diseases. For this milestone, 1000 random photos from each folder of the dataset was selected, resulting in an even spread for each disease. This totaled 4000 images for model training for this milestone. It is planned that all the photos will be used alongside additional augmentation for the categories with fewer images in the final model to prevent skewing and bias.
+
+\subsubsection{Validation and Test Data}
+
+Since there are significantly fewer images categorized under these, all images were used. There are only 32 images for validation spread evenly in the four diseases. The testing data has an even spread too, with 242 images for each disease, totaling 968 images.
+
+\subsubsection{Training and Validation}
+
+For training, a total of 10 epochs were performed for the 4000 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
+
+\subsubsection{Testing}
+
+After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model was written above it.
+
+
+\section{Results and Evaluation}
+
+\subsection{Training/Validation Phase}
+After the model was initialized, it was fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model's performance was measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows insight into the performance trend of the model and its overall journey through the training and validation phase. The rate at which the model learns the trends in the dataset can be witnessed in its ability to better classify the images through the loss and accuracy metrics. The loss method was the cross-entropy loss, which is accessed through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy was calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. In conjunction with this, loss values are stored and calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help further understand the model and its performance.
+
+\subsection{Test Phase}
+By this stage, the model has been evaluated once through the validation phase; however, it was evaluated again, this time on the test split of the dataset via the testing phase. For the testing phase, the performance metric of accuracy was used as the evaluation metric of the performance of the model, which was calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, a confusion matrix was displayed, which visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This aided in easier comprehension and evaluation of the performance of the model on the testing dataset, thus presenting better methods of improvement.
+
+\subsection{Quantitative Results}
+The following results are shown below, which will be acting as the baselines going forward.
+
+\begin{lstlisting}
+  ------ Training and Validation Phase ------
+  Epoch [1/10]:
+  Training - Train Loss: 1.0593, Train Accuracy: 0.5707
+  Validation - Val Loss: 0.5948, Val Accuracy: 0.9062
+  Epoch [2/10]:
+  Training - Train Loss: 0.7679, Train Accuracy: 0.7235
+  Validation - Val Loss: 0.4823, Val Accuracy: 0.8750
+  Epoch [3/10]:
+  Training - Train Loss: 0.7012, Train Accuracy: 0.7355
+  Validation - Val Loss: 0.4155, Val Accuracy: 0.8438
+  Epoch [4/10]:
+  Training - Train Loss: 0.6496, Train Accuracy: 0.7548
+  Validation - Val Loss: 0.3429, Val Accuracy: 0.9062
+  Epoch [5/10]:
+  Training - Train Loss: 0.6159, Train Accuracy: 0.7660
+  Validation - Val Loss: 0.3563, Val Accuracy: 0.9062
+  Epoch [6/10]:
+  Training - Train Loss: 0.5943, Train Accuracy: 0.7772
+  Validation - Val Loss: 0.3234, Val Accuracy: 0.9062
+  Epoch [7/10]:
+  Training - Train Loss: 0.5783, Train Accuracy: 0.7808
+  Validation - Val Loss: 0.3509, Val Accuracy: 0.9062
+  Epoch [8/10]:
+  Training - Train Loss: 0.5760, Train Accuracy: 0.7808
+  Validation - Val Loss: 0.2976, Val Accuracy: 0.8750
+  Epoch [9/10]:
+  Training - Train Loss: 0.5427, Train Accuracy: 0.8005
+  Validation - Val Loss: 0.2798, Val Accuracy: 0.9062
+  Epoch [10/10]:
+  Training - Train Loss: 0.5371, Train Accuracy: 0.8023
+  Validation - Val Loss: 0.2726, Val Accuracy: 0.9062
+\end{lstlisting}
+\captionof{figure}{Training and validation loss and accuracy per epoch.}
+\label{fig:epoch_train_val}
 
 % \begin{center}
-%     \begin{tabular}{| c | c |}
-%         \hline \hline
-%         \textbf{CNV}    & 0 \\
-%         \hline
-%         \textbf{DME}    & 1 \\
-%         \hline
-%         \textbf{DRUSEN} & 2 \\
-%         \hline
-%         \textbf{NORMAL} & 3 \\
-%         \hline \hline
-%     \end{tabular}
+%     \includegraphics[width=0.9\linewidth]{Images/TrainingValidationLoss.png}
+%     \captionof{figure}{Training and validation loss over epochs.}
+%     \label{fig:train_val_loss_full}
+%     \includegraphics[width=0.9\linewidth]{Images/TestingConfusionMatrix.png}
+%     \captionof{figure}{Confusion Matrix of the testing results.}
+%     \label{fig:testing_full}
 % \end{center}
 
-% \section{Features}
+As seen above, while the model was proceeding as intended, there was a large margin for improvement.
 
-% \subsection{Data Input}
-% Since this is a computer vision/image classification task, the features were derived from the pixels of the images. Each pixel was denoted by three values: Red(R), Green(G), and Blue(B). As mentioned previously, each image was cropped and normalized with values corresponding the means and standard deviations for images from ImageNet.
+\section{Feedback and Plans}
 
-% \subsection{Features}
-% The selection of features was not done directly. This was because it was not required as there are no features to select. Since the pixels are the "feature", this would not be justified. As a result, feature engineering and feature selection was not needed. The same can be said for learning embeddings, as this is not a natural language processing task.
+Looking at the results of the evaluation and metrics, it appears that the model and the results are on the right track. The model appears to have successfully achieved an adequate model baseline that was trained on a small subset of the dataset.
 
-% For the output features, there are four main features, which are the four categories of diseases: CNV, DME, DRUSEN, and NORMAL.
+\subsection{Image Processing and Augmentation}
 
-% \section{Implementation}
+As mentioned in section 3, some image preprocessing that involved cropping, horizontally flipping, and normalizing was performed on the images. This presents the first point of improvement that could be done. From the discussion with Parisa, it was identified that the distribution of the training data was skewed towards CNV and Normal, which may cause overfitting and bias towards those labels. As a result, augmenting the training data for DME and Drusen so that there was about the same number of data for each category could reduce bias and skew. Building upon this, another improvement is to add more image transformations such as adding jitter and affine transformations to introduce imperfections in the image data, which could help make the model more robust through adversarial training.
 
-% \subsection{Learning Model}
-% Instead of training a model from scratch, a pretrained neural network was used and adapted it to the use case. The pretrained neural network selected was ResNet-50, which was trained on the ImageNet dataset. ResNet-50 is a neural network that is 50 layers deep originally developed by Microsoft Research in 2015. This is a type of convolutional neural network (CNN), which is a subset of neural networks that are used for image recognition.
+\subsection{Additional Metrics}
 
-% \subsection{Implementation Steps}
+The second point of improvement that can be done would be to add more metrics to help evaluate the results better. In the same conversation, Parisa mentioned that it might be useful to have precision, recall, and F-1 score as a metric in addition to the confusion matrix and accuracy that is currently presented. It would be worthwhile to have the area under the ROC curve (AUC) as a metric for accuracy in tangent with the other metrics mentioned.
 
-% \subsubsection{Initializing the Neural Network}
-% To implement the ResNet-50 based neural network, the first step was to instantiate a neural network that uses ResNet-50. This occurs after all the images have been preprocessed. This was called CustomResNet. For the initialization, the input features and classifiers are all defined. The initialization was very similar to typical setup for neural networks.
+\subsection{Hyperparameters and Dataset}
 
-% \subsubsection{Freezing and Unfreezing Layers}
+Once the improvements outlined above are implemented, the next action would be to train the model on a bigger subset of the training dataset (around 5000 data points) to find the best hyperparameters for the model. While training, the current goal is to optimize for the recall and area under the ROC curve for this project. It is required that the classification model minimizes the number of false negatives, which in this case means that patients that actually have the disease should not go undiagnosed.
 
-% Upon initialization, the first thing was to freeze all the layers but the last layer, the classifier layer. This was because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+Finally, a final training run using the best hyperparameters on the entire training and validation dataset is planned along, with an evaluation using the testing dataset at the end proceeding afterwards.
 
-% \subsubsection{Defining the Criterion and Optimizer}
 
-% Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
+% \section{Template Notes}
+
+% You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
+
+% \subsection{Tables and figures}
+
+% See Table~\ref{citation-guide} for an example of a table and its caption.
+% See Figure~\ref{fig:experiments} for an example of a figure and its caption.
+
+
+% \subsection{Citations}
+
+% \begin{table*}
+%   \centering
+%   \begin{tabular}{lll}
+%     \hline
+%     \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
+%     \hline
+%     \citep{Gusfield:97}       & \verb|\citep|           &                           \\
+%     \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
+%     \citet{Gusfield:97}       & \verb|\citet|           &                           \\
+%     \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
+%     \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
+%     \hline
+%   \end{tabular}
+%   \caption{\label{citation-guide}
+%     Citation commands supported by the style file.
+%   }
+% \end{table*}
+
+% Table~\ref{citation-guide} shows the syntax supported by the style files.
+% We encourage you to use the natbib styles.
+% You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
+% You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
+% You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
+
+% \subsection{References}
+
+% \nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
+
+% Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
+
+% \subsection{Equations}
+
+% An example equation is shown below:
+% \begin{equation}
+%   \label{eq:example}
+%   A = \pi r^2
+% \end{equation}
+
+% Labels for equation numbers, sections, subsections, figures and tables
+% are all defined with the \verb|\label{label}| command and cross references
+% to them are made with the \verb|\ref{label}| command.
+% This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
+
+
+% \section*{Limitations}
+
+\section{Team Contributions}
+
+% Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
+
+\subsection{Elite}
+
+\begin{itemize}
+    \item Worked on the initial image opening and storing of data.
+    \item Wrote sections 1, 3, 4, and 5 of the document.
+\end{itemize}
+
+\subsection{Ishpreet}
+
+\begin{itemize}
+    \item Wrote the model training code and the ResNet-50 neural network.
+    \item Trained and tested the model.
+    \item Wrote section 6 of the document.
+\end{itemize}
+
+\subsection{Kenneth}
+
+\begin{itemize}
+    \item Worked on setting up the neural network and research for the start of the project.
+    \item Wrote sections 2 and 7 of the document.
+\end{itemize}
+
+% Bibliography entries for the entire Anthology, followed by custom entries
+%\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
+
+% Custom bibliography entries only
+\bibliography{custom}
+
+% \appendix
+
+% \section{Example Appendix}
+% \label{sec:appendix}
+
+% This is an appendix.
+
 
 
 \end{document}
