@@ -269,6 +269,10 @@ To implement the ResNet-50 based neural network, the first step was to instantia
 
 Upon initialization, the first thing was to freeze all the layers but the last four layers, which includes three feature sequential layers and the classifier layer. This was because a pretrained model such as ResNet-50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
 
+\subsubsection{Hyperparameter Tuning}
+
+\textbf{ADD NEW SHIT}
+
 \subsubsection{Defining the Criterion and Optimizer}
 
 \textbf{ADD NEW SHIT}
@@ -291,8 +295,6 @@ For training, a total of 100 epochs were performed for the 148820 selected image
 
 After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model was written above it.
 
-\textbf{ADD NEW SHIT}
-
 \section{Results and Evaluation}
 
 \subsection{Training/Validation Phase}
@@ -302,7 +304,7 @@ After the model was initialized, it was fed through the three stages of training
 By this stage, the model has been evaluated once through the validation phase; however, it was evaluated again, this time on the test split of the dataset via the testing phase. For the testing phase, the performance metric of accuracy was used as the evaluation metric of the performance of the model, which was calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, a confusion matrix was displayed, which visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This aided in easier comprehension and evaluation of the performance of the model on the testing dataset, thus presenting better methods of improvement.
 
 \subsection{Quantitative Results}
-The following results are shown below, which will be acting as the baselines going forward.
+The following results are shown below:
 
 \textbf{ADD NEW SHIT}
 
@@ -353,9 +355,42 @@ The following results are shown below, which will be acting as the baselines goi
 
 As seen above, while the model was proceeding as intended, there was a large margin for improvement.
 
+\subsection{Baseline and Previous Results}
+
+\subsubsection{Baseline Results}
+
+The baseline mode that was used for a comparison was a random classification model. This model randomly selects a class for each image without any learning or training. As a result, the expected accuracy for this model is 25\% since there are four classes.
+
+
+
+\textbf{ADD DIAGRAMS}
+
 \section{Progress}
 
-\textbf{ADD NEW SHIT}
+\subsection{Feedback and Planned Improvements}
+
+From the progress report, there were a few problems with the model and the implementation that were highlighted. To start off, the dataset for the model was imbalanced. While this was not important for the progress report since 1000 images were used for each category, this would be a problem when scaling up to a full dataset. The second issue was the lack of a baseline comparison such as Majority Class or a simple CNN. Lastly, there was a lack of hyperparameter tuning and model optimization. There was a lack of momentum in the optimizer, and the learning rate was not adjusted throughout training.
+
+\subsection{Implemented Improvements}
+
+To address the issues highlighted in the feedback, the following improvements were implemented:
+
+\subsubsection{Data Augmentation}
+
+As highlighted in section \textbf{3.3}, data augementation was performed to ensure a balanced dataset. Images in the other three categories (DME, DRUSEN, NORMAL) were augmented to match the number of images in CNV, which included random horizontal flips, random rotations, random resized crops, and color jittering.
+
+\subsubsection{Baseline Comparison}
+
+To address the lack of a baseline comparison, a random classifier was used as a baseline. This classifier
+
+\subsubsection{Hyperparameter Tuning}
+
+\textbf{ADD SHIT HERE}
+
+\subsection{Progress Evaluation}
+
+When viewing all the feedback and the implemented improvements, all the proposed feedback and plans were implemented. There was no change in course of action because the final test accuracy for the model was \textbf{ADD VALUE}, thus hitting the initial target proposed.
+
 
 \section{Error Analysis}
 
