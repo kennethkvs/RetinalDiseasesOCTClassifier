@@ -361,15 +361,126 @@ As seen above, while the model was proceeding as intended, there was a large mar
 
 The baseline mode that was used for a comparison was a random classification model. This model randomly selects a class for each image without any learning or training. As a result, the expected accuracy for this model is 25\% since there are four classes.
 
+\begin{center}
+    \begin{tabular}{| c | c |}
+        \hline
+        \textbf{Metric}   & \textbf{Value} \\
+        \hline
+        Accuracy          & 25.31\%        \\
+        \hline
+        Precision (Macro) & 0.2527         \\
+        Precision (Micro) & 0.2531         \\
+        \hline
+        Recall (Macro)    & 0.2531         \\
+        Recall (Micro)    & 0.2531         \\
+        \hline
+        F1 Score (Macro)  & 0.2526         \\
+        F1 Score (Micro)  & 0.2531         \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.9\linewidth]{Images/RandomMatrix.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix for all classes using the random classifier.}
+    \label{fig:random_matrix_full}
+\end{center}
+
+Adding onto this, each of the classes were individually evaluated. The results are shown below:
+
+\begin{center}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Class}         & \textbf{Precision} & \textbf{Recall} \\
+        \hline
+        CNV                    & 0.25               & 0.26            \\
+        DME                    & 0.22               & 0.21            \\
+        DRUSEN                 & 0.26               & 0.29            \\
+        NORMAL                 & 0.28               & 0.26            \\
+        \hline
+        \textbf{Macro Avg.}    & 0.25               & 0.25            \\
+        \textbf{Weighted Avg.} & 0.25               & 0.25            \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Class}         & \textbf{F1-score} & \textbf{Support} \\
+        \hline
+        CNV                    & 0.25              & 242              \\
+        DME                    & 0.22              & 242              \\
+        DRUSEN                 & 0.27              & 242              \\
+        NORMAL                 & 0.27              & 242              \\
+        \hline
+        \textbf{Accuracy}      & 0.25              & 968              \\
+        \textbf{Macro Avg.}    & 0.25              & 968              \\
+        \textbf{Weighted Avg.} & 0.25              & 968              \\
+        \hline
+    \end{tabular}
+\end{center}
 
 
-\textbf{ADD DIAGRAMS}
+% Individual confusion matrices for each class
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{Images/CNV_random.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix for CNV class using the random classifier.}
+    \label{fig:random_matrix_cnv}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{Images/DME_random.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix for DME class using the random classifier.}
+    \label{fig:random_matrix_dme}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{Images/DRUSEN_random.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix for DRUSEN class using the random classifier.}
+    \label{fig:random_matrix_drusen}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{Images/NORMAL_random.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix for NORMAL class using the random classifier.}
+    \label{fig:random_matrix_normal}
+\end{center}
+
+
+\subsubsection{Previous Results}
+
+These are the results from the progress report. The results are not as comprehensive since many metrics such as precision and recall were not added.
+
+\begin{center}
+    \begin{tabular}{| c | c |}
+        \hline
+        \textbf{Metric} & \textbf{Value} \\
+        \hline
+        Accuracy        & 84.40\%        \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{Images/ProgressMatrix.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix from the progress report.}
+    \label{fig:progress_matrix_full}
+\end{center}
+
+
 
 \section{Progress}
 
 \subsection{Feedback and Planned Improvements}
 
-From the progress report, there were a few problems with the model and the implementation that were highlighted. To start off, the dataset for the model was imbalanced. While this was not important for the progress report since 1000 images were used for each category, this would be a problem when scaling up to a full dataset. The second issue was the lack of a baseline comparison such as Majority Class or a simple CNN. Lastly, there was a lack of hyperparameter tuning and model optimization. There was a lack of momentum in the optimizer, and the learning rate was not adjusted throughout training.
+From the progress report, there were a few problems with the model and the implementation that were highlighted. To start off, the dataset for the model was imbalanced. While this was not important for the progress report since 1000 images were used for each category, this would be a problem when scaling up to a full dataset. The second issue was the lack of a baseline comparison such as Majority Class or a simple CNN. This leads into the third problem, the lack of additional metrics such as micro and macro F1 score, recall, and precision. Lastly, there was a lack of hyperparameter tuning and model optimization. There was a lack of momentum in the optimizer, and the learning rate was not adjusted throughout training.
 
 \subsection{Implemented Improvements}
 
@@ -377,7 +488,11 @@ To address the issues highlighted in the feedback, the following improvements we
 
 \subsubsection{Data Augmentation}
 
-As highlighted in section \textbf{3.3}, data augementation was performed to ensure a balanced dataset. Images in the other three categories (DME, DRUSEN, NORMAL) were augmented to match the number of images in CNV, which included random horizontal flips, random rotations, random resized crops, and color jittering.
+As highlighted in section \textbf{3.3}, data augmentation was performed to ensure a balanced dataset. Images in the other three categories (DME, DRUSEN, NORMAL) were augmented to match the number of images in CNV, which included random horizontal flips, random rotations, random resized crops, and color jittering.
+
+\subsubsection{Additional Metrics}
+
+The additional metrics were calculated to better evaluate the model's performance. These metrics include precision, recall, F1 score (both micro and macro), which were printed with correspondence with the confusion matrix. These metrics provide a more comprehensive understanding of the model's strengths and weaknesses across different classes.
 
 \subsubsection{Baseline Comparison}
 
@@ -398,8 +513,6 @@ When viewing all the feedback and the implemented improvements, all the proposed
 
 
 \section{Team Contributions}
-
-% Write in this section a few sentences describing the contributions of each team member. What did each member work on? Refer to item 7.
 
 \subsection{Elite}
 
