@@ -5,6 +5,7 @@ al3pvenv/
 1000_images_only/
 5000_images_only/
 10000_images_only/
+12000_images_balanced/
 *.aux
 *.log
 *.out
