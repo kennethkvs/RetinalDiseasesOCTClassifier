@@ -2,3 +2,10 @@ Drusen
 drusen
 DRUSEN
 Kaggle
+CustomResNet
+colours
+Badduri
+Nagendra
+ResNet
+ImageNet
+nn

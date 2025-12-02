@@ -120,12 +120,9 @@ Healthcare providers deal with many vision related illnesses such as Diabetic Ma
 
 \section{Related Work}
 
-With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in recent years, it is not surprising that many researchers around the world have worked on the classification of retinal diseases using ML and/or DL methods. Most related works have approached the problem by incorporating transfer learning to perform multiclass or binary classification~\citep{Kermany2018-dc, Miladinovic2024-og,Reddy_2025-nr}.
+With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in recent years, it is not surprising that many researchers around the world have worked on the classification of retinal diseases using ML and/or DL methods. Most related works have approached the problem by incorporating transfer learning to perform multi-class or binary classification~\citep{Kermany2018-dc, Miladinovic2024-og,Reddy_2025-nr}.
 
 As seen in the notebook created by the Kaggle user Badduri Nagendra Reddy~\citeyearpar{Reddy_2025-nr}, the fine-tuned model based on ResNet50 was able to achieve an impressive 98.97\% final test accuracy on the same dataset as the one used in this project. Similarly, the models defined in the papers typically build upon a pre-trained model, where the authors only unfreeze the weights of the last few layers and add a final classification layer~\citep{Kermany2018-dc,Miladinovic2024-og}.
-
-% Additionally, these studies experimented with different base models such as VGG16, InceptionV3, and other variations of ResNet, all of which were able to achieve mid-to-high 90\% accuracy~\citep{9002415,Kermany2018-dc,Miladinovic2024-og}. In contrast, the paper by Özdaş et al.~\citeyearpar{diagnostics13030433} outlined an interesting approach using the Firefly algorithm combined with transfer learning models to extract features from images, followed by classical ML classifiers for binary classification, achieving 95.7\% accuracy on their dataset.
-
 
 \section{Dataset}
 
@@ -229,7 +226,7 @@ This results in the training dataset having a total of 148820 images.
 
 \subsection{Preprocessing}
 
-Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly for the \textit{train} dataset when compared to both \textit{test} and \textit{val} datasets. Both pipelines resized the images to 224 pixels by 224 pixels and normalized them with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. Since we are using ResNet50 as the base model, the values for the mean and standard deviation come from ImageNet's preset values, which is the dataset that ResNet is being trained on. The only difference in the preprocessing pipeline is that before normalization, the \textit{train} dataset images might be horizontally flipped whereas the image data for the \textit{TV} pipeline is not. This allowed for the training set to have a more robust dataset. However, this is technically not considered an augmentation since no new data was created (no data distribution changes).
+Each image was loaded from the various folders as a PIL (Pillow, not the Python Imaging Library) Image and then converted to a tensor object. The pipeline varies slightly for the \textit{train} dataset when compared to both \textit{test} and \textit{val} datasets. Both pipelines resized the images to 224 pixels by 224 pixels and normalized them with means [0.485, 0.456, 0.406] and standard deviation (std) of [0.229, 0.224, 0.225]. Since we are using ResNet50 as the base model, the values for the mean and standard deviation come from ImageNet's preset values, which is the dataset that ResNet is being trained on. The only difference in the preprocessing pipeline is that before normalization, the \textit{train} dataset images might be horizontally flipped whereas the image data for the \textit{test} and \textit{val} pipelines is not. This allowed for the training set to have a more robust dataset. However, this is technically not considered an augmentation since no new data was created (no data distribution changes).
 
 \subsection{Annotation}
 Each image was labeled with an integer to represent its corresponding disease. The images were already named as DISEASE-\#\#\#\#\#-\#.jpeg and located in their corresponding folders, which allowed for ease of labeling. When assigning labels to the dataset, we use the following mapping:
@@ -270,15 +267,17 @@ To implement the ResNet-50 based neural network, the first step was to instantia
 
 \subsubsection{Freezing and Unfreezing Layers}
 
-Upon initialization, the first thing was to freeze all the layers but the last layer, the classifier layer. This was because a pretrained model such as ResNet 50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
+Upon initialization, the first thing was to freeze all the layers but the last four layers, which includes three feature sequential layers and the classifier layer. This was because a pretrained model such as ResNet-50 already comes with various useful general features such as edges, textures, and colours in early layers. Since the dataset that was used was quite small (four disease classes), training all the layers can result in an increase of time, overfitting, and wiping out pretrained knowledge.
 
 \subsubsection{Defining the Criterion and Optimizer}
 
-Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
+\textbf{ADD NEW SHIT}
+
+% Before compiling the model, two additional items need to be addressed, which are the criterion and optimizer. For the criterion, Cross Entropy was selected from the torch.nn (neural network) library. For the optimizer, Adam (Adaptive Moment Estimation) from the torch.optim library was used. The Adam stochastic optimization method uses two key concepts, which are Momentum and Root Mean Square Propagation (RMSprop), combining them to balance the optimization process. The learning rate defined in Adam was 0.001, a common value for machine learning. The optimization was performed only on the parameters of the final layer since the other layers are currently frozen.
 
 \subsubsection{Training Data}
 
-The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution was not even, as CNV had significantly more images compared to the other diseases. For this milestone, 1000 random photos from each folder of the dataset was selected, resulting in an even spread for each disease. This totaled 4000 images for model training for this milestone. It is planned that all the photos will be used alongside additional augmentation for the categories with fewer images in the final model to prevent skewing and bias.
+The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution was not even, as CNV had significantly more images compared to the other diseases. When comparing CNV to the category with the least images, DRUSEN, CNV has around 2.5 times the images in DRUSEN. This was remedied by augmenting images for each section to match CNV. This totaled 148820 images for model training, with 37205 images per category. By augmenting the images to even out the categories, this prevented skewing and bias.
 
 \subsubsection{Validation and Test Data}
 
@@ -286,12 +285,13 @@ Since there are significantly fewer images categorized under these, all images w
 
 \subsubsection{Training and Validation}
 
-For training, a total of 10 epochs were performed for the 4000 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
+For training, a total of 100 epochs were performed for the 148820 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
 
 \subsubsection{Testing}
 
 After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model was written above it.
 
+\textbf{ADD NEW SHIT}
 
 \section{Results and Evaluation}
 
@@ -304,41 +304,43 @@ By this stage, the model has been evaluated once through the validation phase; h
 \subsection{Quantitative Results}
 The following results are shown below, which will be acting as the baselines going forward.
 
-\begin{lstlisting}
-  ------ Training and Validation Phase ------
-  Epoch [1/10]:
-  Training - Train Loss: 1.0593, Train Accuracy: 0.5707
-  Validation - Val Loss: 0.5948, Val Accuracy: 0.9062
-  Epoch [2/10]:
-  Training - Train Loss: 0.7679, Train Accuracy: 0.7235
-  Validation - Val Loss: 0.4823, Val Accuracy: 0.8750
-  Epoch [3/10]:
-  Training - Train Loss: 0.7012, Train Accuracy: 0.7355
-  Validation - Val Loss: 0.4155, Val Accuracy: 0.8438
-  Epoch [4/10]:
-  Training - Train Loss: 0.6496, Train Accuracy: 0.7548
-  Validation - Val Loss: 0.3429, Val Accuracy: 0.9062
-  Epoch [5/10]:
-  Training - Train Loss: 0.6159, Train Accuracy: 0.7660
-  Validation - Val Loss: 0.3563, Val Accuracy: 0.9062
-  Epoch [6/10]:
-  Training - Train Loss: 0.5943, Train Accuracy: 0.7772
-  Validation - Val Loss: 0.3234, Val Accuracy: 0.9062
-  Epoch [7/10]:
-  Training - Train Loss: 0.5783, Train Accuracy: 0.7808
-  Validation - Val Loss: 0.3509, Val Accuracy: 0.9062
-  Epoch [8/10]:
-  Training - Train Loss: 0.5760, Train Accuracy: 0.7808
-  Validation - Val Loss: 0.2976, Val Accuracy: 0.8750
-  Epoch [9/10]:
-  Training - Train Loss: 0.5427, Train Accuracy: 0.8005
-  Validation - Val Loss: 0.2798, Val Accuracy: 0.9062
-  Epoch [10/10]:
-  Training - Train Loss: 0.5371, Train Accuracy: 0.8023
-  Validation - Val Loss: 0.2726, Val Accuracy: 0.9062
-\end{lstlisting}
-\captionof{figure}{Training and validation loss and accuracy per epoch.}
-\label{fig:epoch_train_val}
+\textbf{ADD NEW SHIT}
+
+% \begin{lstlisting}
+%   ------ Training and Validation Phase ------
+%   Epoch [1/10]:
+%   Training - Train Loss: 1.0593, Train Accuracy: 0.5707
+%   Validation - Val Loss: 0.5948, Val Accuracy: 0.9062
+%   Epoch [2/10]:
+%   Training - Train Loss: 0.7679, Train Accuracy: 0.7235
+%   Validation - Val Loss: 0.4823, Val Accuracy: 0.8750
+%   Epoch [3/10]:
+%   Training - Train Loss: 0.7012, Train Accuracy: 0.7355
+%   Validation - Val Loss: 0.4155, Val Accuracy: 0.8438
+%   Epoch [4/10]:
+%   Training - Train Loss: 0.6496, Train Accuracy: 0.7548
+%   Validation - Val Loss: 0.3429, Val Accuracy: 0.9062
+%   Epoch [5/10]:
+%   Training - Train Loss: 0.6159, Train Accuracy: 0.7660
+%   Validation - Val Loss: 0.3563, Val Accuracy: 0.9062
+%   Epoch [6/10]:
+%   Training - Train Loss: 0.5943, Train Accuracy: 0.7772
+%   Validation - Val Loss: 0.3234, Val Accuracy: 0.9062
+%   Epoch [7/10]:
+%   Training - Train Loss: 0.5783, Train Accuracy: 0.7808
+%   Validation - Val Loss: 0.3509, Val Accuracy: 0.9062
+%   Epoch [8/10]:
+%   Training - Train Loss: 0.5760, Train Accuracy: 0.7808
+%   Validation - Val Loss: 0.2976, Val Accuracy: 0.8750
+%   Epoch [9/10]:
+%   Training - Train Loss: 0.5427, Train Accuracy: 0.8005
+%   Validation - Val Loss: 0.2798, Val Accuracy: 0.9062
+%   Epoch [10/10]:
+%   Training - Train Loss: 0.5371, Train Accuracy: 0.8023
+%   Validation - Val Loss: 0.2726, Val Accuracy: 0.9062
+% \end{lstlisting}
+% \captionof{figure}{Training and validation loss and accuracy per epoch.}
+% \label{fig:epoch_train_val}
 
 % \begin{center}
 %     \includegraphics[width=0.9\linewidth]{Images/TrainingValidationLoss.png}
@@ -351,82 +353,14 @@ The following results are shown below, which will be acting as the baselines goi
 
 As seen above, while the model was proceeding as intended, there was a large margin for improvement.
 
-\section{Feedback and Plans}
+\section{Progress}
 
-Looking at the results of the evaluation and metrics, it appears that the model and the results are on the right track. The model appears to have successfully achieved an adequate model baseline that was trained on a small subset of the dataset.
+\textbf{ADD NEW SHIT}
 
-\subsection{Image Processing and Augmentation}
+\section{Error Analysis}
 
-As mentioned in section 3, some image preprocessing that involved cropping, horizontally flipping, and normalizing was performed on the images. This presents the first point of improvement that could be done. From the discussion with Parisa, it was identified that the distribution of the training data was skewed towards CNV and Normal, which may cause overfitting and bias towards those labels. As a result, augmenting the training data for DME and Drusen so that there was about the same number of data for each category could reduce bias and skew. Building upon this, another improvement is to add more image transformations such as adding jitter and affine transformations to introduce imperfections in the image data, which could help make the model more robust through adversarial training.
+\textbf{ADD NEW SHIT}
 
-\subsection{Additional Metrics}
-
-The second point of improvement that can be done would be to add more metrics to help evaluate the results better. In the same conversation, Parisa mentioned that it might be useful to have precision, recall, and F-1 score as a metric in addition to the confusion matrix and accuracy that is currently presented. It would be worthwhile to have the area under the ROC curve (AUC) as a metric for accuracy in tangent with the other metrics mentioned.
-
-\subsection{Hyperparameters and Dataset}
-
-Once the improvements outlined above are implemented, the next action would be to train the model on a bigger subset of the training dataset (around 5000 data points) to find the best hyperparameters for the model. While training, the current goal is to optimize for the recall and area under the ROC curve for this project. It is required that the classification model minimizes the number of false negatives, which in this case means that patients that actually have the disease should not go undiagnosed.
-
-Finally, a final training run using the best hyperparameters on the entire training and validation dataset is planned along, with an evaluation using the testing dataset at the end proceeding afterwards.
-
-
-% \section{Template Notes}
-
-% You can remove this section or comment it out, as it only contains instructions for how to use this template. You may use subsections in your document as you find appropriate.
-
-% \subsection{Tables and figures}
-
-% See Table~\ref{citation-guide} for an example of a table and its caption.
-% See Figure~\ref{fig:experiments} for an example of a figure and its caption.
-
-
-% \subsection{Citations}
-
-% \begin{table*}
-%   \centering
-%   \begin{tabular}{lll}
-%     \hline
-%     \textbf{Output}           & \textbf{natbib command} & \textbf{ACL only command} \\
-%     \hline
-%     \citep{Gusfield:97}       & \verb|\citep|           &                           \\
-%     \citealp{Gusfield:97}     & \verb|\citealp|         &                           \\
-%     \citet{Gusfield:97}       & \verb|\citet|           &                           \\
-%     \citeyearpar{Gusfield:97} & \verb|\citeyearpar|     &                           \\
-%     \citeposs{Gusfield:97}    &                         & \verb|\citeposs|          \\
-%     \hline
-%   \end{tabular}
-%   \caption{\label{citation-guide}
-%     Citation commands supported by the style file.
-%   }
-% \end{table*}
-
-% Table~\ref{citation-guide} shows the syntax supported by the style files.
-% We encourage you to use the natbib styles.
-% You can use the command \verb|\citet| (cite in text) to get ``author (year)'' citations, like this citation to a paper by \citet{Gusfield:97}.
-% You can use the command \verb|\citep| (cite in parentheses) to get ``(author, year)'' citations \citep{Gusfield:97}.
-% You can use the command \verb|\citealp| (alternative cite without parentheses) to get ``author, year'' citations, which is useful for using citations within parentheses (e.g. \citealp{Gusfield:97}).
-
-% \subsection{References}
-
-% \nocite{Ando2005,andrew2007scalable,rasooli-tetrault-2015}
-
-% Many websites where you can find academic papers also allow you to export a bib file for citation or bib formatted entry. Copy this into the \texttt{custom.bib} and you will be able to cite the paper in the \LaTeX{}. You can remove the example entries.
-
-% \subsection{Equations}
-
-% An example equation is shown below:
-% \begin{equation}
-%   \label{eq:example}
-%   A = \pi r^2
-% \end{equation}
-
-% Labels for equation numbers, sections, subsections, figures and tables
-% are all defined with the \verb|\label{label}| command and cross references
-% to them are made with the \verb|\ref{label}| command.
-% This an example cross-reference to Equation~\ref{eq:example}. You can also write equations inline, like this: $A=\pi r^2$.
-
-
-% \section*{Limitations}
 
 \section{Team Contributions}
 
