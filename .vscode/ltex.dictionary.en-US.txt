@@ -10,3 +10,5 @@ ResNet
 ImageNet
 nn
 Ishpreet
+backpropagation
+underfitting
