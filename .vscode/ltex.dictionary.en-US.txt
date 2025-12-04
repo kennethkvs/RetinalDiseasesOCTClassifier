@@ -12,3 +12,10 @@ nn
 Ishpreet
 backpropagation
 underfitting
+<<<<<<< Updated upstream
+=======
+warmup
+downsampling
+downsample
+Kermany
+>>>>>>> Stashed changes

@@ -2,3 +2,8 @@
 {"rule":"CD_NN","sentence":"^\\QAfter testing, the values were plotted on a 4 \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q 4 confusion matrix.\\E$"}
 {"rule":"SENTENCE_WHITESPACE","sentence":"^\\QCrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy was calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively.\\E$"}
 {"rule":"CD_NN","sentence":"^\\QIn the previous progress report, there was only a 4 \\E(?:Dummy|Ina|Jimmy-)[0-9]+\\Q 4 confusion matrix for all classes and the final accuracy number for the model.\\E$"}
+<<<<<<< Updated upstream
+=======
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QThis is a pattern that can be seen throughout the different versions of the model's implementation and in the results from Kermany et al. Kermany2018-dc and Reddy Reddy_2025-nr as seen in figures 10.\\E$"}
+{"rule":"ENGLISH_WORD_REPEAT_RULE","sentence":"^\\QComparing this to the results shown in Kermany et al. Kermany2018-dc and Reddy Reddy_2025-nr, it can be seen that the model seems to outperform most if not all of these implementations, including human experts.\\E$"}
+>>>>>>> Stashed changes

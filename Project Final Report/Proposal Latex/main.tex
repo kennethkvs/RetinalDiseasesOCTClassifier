@@ -11,6 +11,12 @@
 \usepackage{multirow}
 \usepackage{graphicx}
 \usepackage{natbib}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{subcaption}
+\usepackage{pgfplots}
+\usepackage{multicol}
+\pgfplotsset{compat=1.17}
 \bibliographystyle{plainnat}
 \graphicspath{ {./Images/} }
 
@@ -153,9 +159,11 @@ When downloading the data, the dataset was partitioned as follows:
     .3 NORMAL.
 }
 
-\vspace*{5cm} % REMOVE IF WE DONT NEED MORE SPACE
+\vspace*{0.1cm}
 
 The new added folders for the training data, augmented, contains the augmented image data for each category. The reason for this will be elaborated in the \textbf{Data Augmentation} section.
+
+\vfill
 
 \subsection{Initial Image Counts}
 
@@ -198,6 +206,8 @@ augmentation_transforms = transforms.Compose([
 This augmentation process includes randomly flipping the image horizontally, randomly rotating the image by up to 50 degrees, randomly cropping and resizing the image, and randomly changing the contrast and brightness of the image. By performing this, not only will the dataset be more robust as a whole, but the model will less likely to overfit or have bias towards a certain class.
 
 As a result, the new image counts after augmentation are as follows:
+
+\vfill
 
 \begin{center}
     \begin{tabular}{|c|c|c|}
@@ -398,6 +408,8 @@ The baseline mode that was used for a comparison was a random classification mod
     \end{tabular}
 \end{center}
 
+\vfill
+
 \begin{center}
     \includegraphics[width=0.9\linewidth]{Images/RandomMatrix.png}
     \captionsetup{hypcap=false}
@@ -522,13 +534,219 @@ To help the model achieve better performance, several model optimizations and hy
 
 \subsection{Progress Evaluation}
 
-When viewing all the feedback and the implemented improvements, all the proposed feedback and plans were implemented. There was no change in course of action because the final test accuracy for the model was \textbf{ADD VALUE}, thus hitting the initial target proposed.
+When viewing all the feedback and the implemented improvements, all the proposed feedback and plans were implemented. There was no change in course of action because the final test accuracy for the model was 99.69\%, thus hitting the initial target proposed.
 
 
 \section{Error Analysis}
 
-\textbf{ADD NEW SHIT}
 
+\begin{figure}[h!]
+    \centering
+    \scriptsize % Make all text and tables smaller
+    \begin{multicols*}{2}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=3.8cm, height=3.8cm,
+                    colormap={Red}{color=(white) rgb255=(222, 117, 91)},
+                    xlabel=Predicted,
+                    xlabel style={yshift=-2pt, font=\tiny},
+                    ylabel=Actual,
+                    ylabel style={yshift=2pt, font=\tiny},
+                    xticklabels={CNV, DME, DRUSEN, NORMAL},
+                    xtick={0,...,3},
+                    xtick style={draw=none},
+                    yticklabels={CNV, DME, DRUSEN, NORMAL},
+                    ytick={0,...,3},
+                    ytick style={draw=none},
+                    enlargelimits=false,
+                    colorbar=false,
+                    tick label style={font=\tiny},
+                    xticklabel style={rotate=90, font=\tiny},
+                    yticklabel style={font=\tiny},
+                    nodes near coords={\pgfmathprintnumber\pgfplotspointmeta},
+                    every node near coord/.append style={anchor=center, font=\tiny},
+                ]
+                \addplot[
+                    matrix plot,
+                    mesh/cols=4,
+                    point meta=explicit,
+                    draw=gray,
+                    thick=0.3pt,
+                ] table [meta=C] {
+                        x y C
+                        0 0 230
+                        1 0 5
+                        2 0 4
+                        3 0 3
+
+                        0 1 8
+                        1 1 220
+                        2 1 7
+                        3 1 7
+
+                        0 2 10
+                        1 2 6
+                        2 2 215
+                        3 2 11
+
+                        0 3 5
+                        1 3 7
+                        2 3 8
+                        3 3 222
+                    };
+            \end{axis}
+        \end{tikzpicture}
+
+        a. Progress Report Model
+
+        \centering
+
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=3.8cm, height=3.8cm,
+                    colormap={Red}{color=(white) rgb255=(222, 117, 91)},
+                    xlabel=Predicted,
+                    xlabel style={yshift=-2pt, font=\tiny},
+                    ylabel=Actual,
+                    ylabel style={yshift=2pt, font=\tiny},
+                    xticklabels={CNV, DME, DRUSEN, NORMAL},
+                    xtick={0,...,3},
+                    xtick style={draw=none},
+                    yticklabels={CNV, DME, DRUSEN, NORMAL},
+                    ytick={0,...,3},
+                    ytick style={draw=none},
+                    enlargelimits=false,
+                    colorbar=false,
+                    tick label style={font=\tiny},
+                    xticklabel style={rotate=90, font=\tiny},
+                    yticklabel style={font=\tiny},
+                    nodes near coords={\pgfmathprintnumber\pgfplotspointmeta},
+                    every node near coord/.append style={anchor=center, font=\tiny},
+                ]
+                \addplot[
+                    matrix plot,
+                    mesh/cols=4,
+                    point meta=explicit,
+                    draw=gray,
+                    thick=0.3pt,
+                ] table [meta=C] {
+                        x y C
+                        0 0 238
+                        1 0 2
+                        2 0 1
+                        3 0 1
+
+                        0 1 3
+                        1 1 236
+                        2 1 2
+                        3 1 1
+
+                        0 2 2
+                        1 2 3
+                        2 2 235
+                        3 2 2
+
+                        0 3 1
+                        1 3 2
+                        2 3 3
+                        3 3 236
+                    };
+            \end{axis}
+        \end{tikzpicture}
+
+        b. Final Report Model (1000 per Category)
+
+        \centering
+
+    \end{multicols*}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+                width=3.8cm, height=3.8cm,
+                colormap={Red}{color=(white) rgb255=(222, 117, 91)},
+                xlabel=Predicted,
+                xlabel style={yshift=-2pt, font=\tiny},
+                ylabel=Actual,
+                ylabel style={yshift=2pt, font=\tiny},
+                xticklabels={CNV, DME, DRUSEN, NORMAL},
+                xtick={0,...,3},
+                xtick style={draw=none},
+                yticklabels={CNV, DME, DRUSEN, NORMAL},
+                ytick={0,...,3},
+                ytick style={draw=none},
+                enlargelimits=false,
+                colorbar=false,
+                tick label style={font=\tiny},
+                xticklabel style={rotate=90, font=\tiny},
+                yticklabel style={font=\tiny},
+                nodes near coords={\pgfmathprintnumber\pgfplotspointmeta},
+                every node near coord/.append style={anchor=center, font=\tiny},
+            ]
+            \addplot[
+                matrix plot,
+                mesh/cols=4,
+                point meta=explicit,
+                draw=gray,
+                thick=0.3pt,
+            ] table [meta=C] {
+                    x y C
+                    0 0 242
+                    1 0 0
+                    2 0 0
+                    3 0 0
+
+                    0 1 0
+                    1 1 242
+                    2 1 0
+                    3 1 0
+
+                    0 2 3
+                    1 2 0
+                    2 2 242
+                    3 2 0
+
+                    0 3 0
+                    1 3 0
+                    2 3 0
+                    3 3 242
+                };
+        \end{axis}
+    \end{tikzpicture}
+
+    c. Final Report Model (All Images)
+    \caption{Confusion matrices for three models generated by group 76: Progress Report Model, Final Report Model (1000 per Category), and the Final Report Model (All Images).}
+    \label{fig:comparison_model_matrices}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \begin{minipage}[b]{0.49\linewidth}
+        \includegraphics[width=\linewidth]{Images/KermanyMatrix.png}
+        \captionsetup{hypcap=false}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.49\linewidth}
+        \includegraphics[width=\linewidth]{Images/ReddyMatrix.png}
+        \captionsetup{hypcap=false}
+    \end{minipage}
+    \caption{Confusion matrices from models outlined in~\citep{Kermany2018-dc} and~\citep{Reddy_2025-nr}.}
+    \label{fig:comparison_reddy_kermany_matrices}
+\end{figure}
+
+\begin{center}
+    \includegraphics[width=1\linewidth]{Images/6Matrix.png}
+    \captionsetup{hypcap=false}
+    \captionof{figure}{Confusion Matrix from the progress report.}
+    \label{fig:kermany_human_full}
+\end{center}
+
+
+As shown in section 6.3 and figure 9, the final model was able to perform incredibly well, only making 3 wrong predictions out of all 968 data points in the test set. It was also able to reach a perfect 1.0 recall, precision, and f-1 scores for the NORMAL-vs-Rest classification. This means that all cases of a retinal disease would be classified as a disease, which will help the early detection of retinal diseases and hopefully prevent any condition from being undiagnosed. Comparing this to the results shown in Kermany et al.~\citeyearpar{Kermany2018-dc} and Reddy~\citeyearpar{Reddy_2025-nr}, it can be seen that the model seems to outperform most if not all of these implementations, including human experts.
+
+On the other hand, figure 9 clearly shows that the final results for the model trained on all the images has only 3 incorrect predictions, all of which come from DRUSEN images that were classified as CNV. This is a pattern that can be seen throughout the different versions of the model's implementation and in the results from Kermany et al.~\citeyearpar{Kermany2018-dc} and Reddy~\citeyearpar{Reddy_2025-nr} as seen in figures 10. This bias towards predicting CNV could be caused by the distribution of the training dataset itself which has a lot more CNV images. While data augmentation was performed to get DME and DRUSEN's data to be the same amount as CNV, these newly added data were essentially slight modifications to the original and much smaller dataset. Thus, it is possible that the model had a harder time learning the features of DME and DRUSEN when compared to CNV. However, it can be seen in figure 11 that human experts also tend to mostly misclassify a DME and DRUSEN as CNV, which could suggest that the bias that is seen in the model is a result of the characteristics of the underlying problem itself.
+
+One thing that can be done to possibly improve the model and mitigate this bias is to downsample the majority class, which in this case is the CNV class. By downsampling it, there will be less data augmentation required for the other classes such as DME and DRUSEN. An experiment can be conducted to see if different distributions of augmented vs non-augmented data change the bias of the predictions that the model makes. However, it must be noted that while downsampling the dataset might fix the bias issue, it is also important to keep a large enough dataset for each class so that the model can still learn the required features to perform its task.
 
 \section{Team Contributions}
 
@@ -536,7 +754,8 @@ When viewing all the feedback and the implemented improvements, all the proposed
 
 \begin{itemize}
     \item Worked on the initial image opening and storing of data.
-    \item Wrote sections 1, 3, 4, and 5 of the document.
+    \item Implemented the image augmentation process.
+    \item Wrote sections 1, 3, 4, and 5 of the document and worked on overall presentation of Latex
 \end{itemize}
 
 \subsection{Ishpreet}
@@ -554,19 +773,6 @@ When viewing all the feedback and the implemented improvements, all the proposed
     \item Wrote sections 2 and 7 of the document.
 \end{itemize}
 
-% Bibliography entries for the entire Anthology, followed by custom entries
-%\bibliography{custom,anthology-overleaf-1,anthology-overleaf-2}
-
-% Custom bibliography entries only
 \bibliography{custom}
-
-% \appendix
-
-% \section{Example Appendix}
-% \label{sec:appendix}
-
-% This is an appendix.
-
-
 
 \end{document}
