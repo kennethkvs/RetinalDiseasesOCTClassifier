@@ -130,6 +130,8 @@ With the rising popularity of Machine Learning (ML) and Deep Learning (DL) in re
 
 As seen in the notebook created by the Kaggle user Badduri Nagendra Reddy~\citeyearpar{Reddy_2025-nr}, the fine-tuned model based on ResNet50 was able to achieve an impressive 98.97\% final test accuracy on the same dataset as the one used in this project. Similarly, the models defined in the papers typically build upon a pre-trained model, where the authors only unfreeze the weights of the last few layers and add a final classification layer~\citep{Kermany2018-dc,Miladinovic2024-og}.
 
+Additionally, these studies experimented with different base models such as VGG16, InceptionV3, and other variations of ResNet, all of which were able to achieve mid-to-high 90\% accuracy~\citep{9002415,Kermany2018-dc,Miladinovic2024-og}. In contrast, the paper by Özdaş et al.~\citeyearpar{diagnostics13030433} outlined an interesting approach using the Firefly algorithm combined with transfer learning models to extract features from images, followed by classical ML classifiers for binary classification, achieving 95.7\% accuracy on their dataset.
+
 \section{Dataset}
 
 \subsection{Folder Structure}
@@ -283,7 +285,7 @@ Upon initialization, the first thing was to freeze all the layers but the last f
 
 While the developed model achieved respectable results during the progress report check-in, it left a great margin for improvement in the form of model optimizations and hyperparameter tuning, which were completed in this final stage. To begin, due to the size of the ResNet-50 and the large quantity of data, using Grid Search to narrow down the hyperparameter values, like the learning rate to fine-tune, would have been extremely costly in terms of runtime and computation power, making it not ideal. Therefore, learning rate scheduling was used to help fine-tune the model, as having a large starting learning rate value can dynamically decrease the learning rate in the context of the model's performance during model training. This allows for the model to arrive at the optimal learning independently while training on the large dataset without requiring the various runs that a fine-tuning operation like grid search would take.
 
-The learning rate scheduler CosineAnnealingLR was chosen because it decreases the learning rate according to a cosine curve, which allows for an overall smooth learning rate curve that keeps training stable, allowing for better generalization in the model. As well as the ability to rapidly decrease the learning rate in the beginning when it is usually still far from the optimal value, and slows down near the end when it nears the optimal value,  allowing for faster convergence. In addition to the learning rate scheduler, a prebuilt warmup scheduler function, GradualWarmupScheduler, created by Kaggle user Aryan Khatana (0x4RY4N), was implemented. The warmup scheduler uses the first 5 epochs of the model as a kind of 'warm up', increasing the training rate slowly to the desired value, after which it hands it off to the normal Cosine scheduler to continue the learning rate scheduling. This warm-up helps stabilize the training of the model, which in turn allows for overall better generalization within the model, leading to better performance, and allows for a high beginning learning rate value to be set for the learning rate scheduler, which gives way for faster convergence. Lastly, to help further prevent overfitting, save computation time, and achieve faster convergence, early-stopping was implemented with the monitoring of the validation loss with a threshold value of 0.0001 and patience of 10.
+The learning rate scheduler CosineAnnealingLR was chosen because it decreases the learning rate according to a cosine curve, which allows for an overall smooth learning rate curve that keeps training stable and enables better generalization. It rapidly decreases the learning rate in the beginning when the model is far from the optimal value, and slows down near the end as it approaches the optimum, allowing for faster convergence. In addition, a warmup scheduler, GradualWarmupScheduler~\citeyearpar{4RY4N_2025-nr}, was implemented to gradually increase the learning rate during the first 5 epochs before handing off to the CosineAnnealingLR scheduler. This warmup helps stabilize training and allows for a higher initial learning rate, improving convergence and generalization. Early stopping was also used, monitoring validation loss with a threshold of 0.0001 and patience of 10, to prevent overfitting and save computation time.
 
 \subsubsection{Criterion}
 
@@ -297,35 +299,24 @@ However, since the model is being fed the entire dataset in this final stage, Ad
 
 Compared to Adam, SGD required more tuning to truly operate at its best, and thus, it was configured with a starting learning rate value of 0.01 that was narrowed down through various thorough tests and is dynamically scaled according to the learning rate scheduler, CosineAnnealingLR. A momentum value of 0.9 that allows for faster convergence and generalization, as it increases the speed of the model when it is heading in the right direction, while slowing down when going in the wrong direction. It was also equipped with a weight decay value of 0.0001, which helped prevent overfitting by penalizing extremely large weights. Lastly, the optimizer model was configured to enable Nesterov momentum, which boosts momentum and speeds smoother convergence by allowing the function to make better-informed updates as it steps using momentum, thus allowing it to not overshoot when arriving at the optimal solution.
 
-\subsubsection{Training Data}
-
-The dataset has 83484 images in the four folders (CNV, DME, DRUSEN, NORMAL) under training. The distribution was not even, as CNV had significantly more images compared to the other diseases. When comparing CNV to the category with the least images, DRUSEN, CNV has around 2.5 times the images in DRUSEN. This was remedied by augmenting images for each section to match CNV. This totaled 148820 images for model training, with 37205 images per category. By augmenting the images to even out the categories, this prevented skewing and bias.
-
-\subsubsection{Validation and Test Data}
-
-Since there are significantly fewer images categorized under these, all images were used. There are only 32 images for validation spread evenly in the four diseases. The testing data has an even spread too, with 242 images for each disease, totaling 968 images.
-
-\subsubsection{Training and Validation}
-
-For training, a total of 100 epochs were performed for the 148820 selected images. The loss and accuracy of both training and validation were printed along with a graph displaying the loss for training and validation.
-
-\subsubsection{Testing}
-
-After testing, the values were plotted on a 4 $\times$ 4 confusion matrix. The final accuracy of the model was written above it.
-
 \section{Results and Evaluation}
 
-\subsection{Training/Validation Phase}
+\subsection{Training and Validation Methodology}
 
-After the model was initialized, it was fed through the three stages of training, validation, and testing, with the training and validation phases being combined in a singular loop to save computation time as well as allow for better performance metric representation. During the training and validation phase, the model's performance was measured via the computation of training/validation loss and training/validation accuracy at each epoch. This allows insight into the performance trend of the model and its overall journey through the training and validation phase. The rate at which the model learns the trends in the dataset can be witnessed in its ability to better classify the images through the loss and accuracy metrics. The loss method was the cross-entropy loss, which is accessed through the nn.CrossEntropyLoss() function that preexists as a part of PyTorch, and the accuracy was calculated via the division of the correct predictions by the model on both the training and validation datasets by the total predictions by the model on the training and validation sets, respectively. In conjunction with this, loss values are stored and calculated for the training and validation steps, and then visualizing the overall trends by plotting them on a line graph to help further understand the model and its performance.
+At this stage, the training dataset contains all augmented and non-augmented images, which sums up to 148,820 images in total or 37,205 images per class for all 4 classes. As there are a lot of data points, it was decided that cross-validation was not necessary in this case. Meanwhile, the validation dataset was kept at 32 images in total or 8 images per class for all 4 classes, which is the original split from the dataset's source. This is done to avoid performing augmentation on the validation dataset and preserve the quality of the validation dataset since it is possible that the authors of the dataset have cherry-picked these specific images to be the ideal examples for validation. Once the model was implemented, the training and validation datasets were passed on to the training function, where the gradient was computed and backpropagation was performed on the unfrozen layers. At each epoch, the average loss and accuracy of both the training and validation dataset was stored, printed out, and later graphed to help us evaluate whether our model is overfitting or underfitting the dataset. Finally, the best model state is saved at the end of the epochs or when the early stopping condition is triggered.
 
-\subsection{Test Phase}
-By this stage, the model has been evaluated once through the validation phase; however, it was evaluated again, this time on the test split of the dataset via the testing phase. For the testing phase, the performance metric of accuracy was used as the evaluation metric of the performance of the model, which was calculated via the same accuracy calculation method as training and validation. In addition to these performance metrics, a confusion matrix was displayed, which visualizes the true positive (TP), true negative (TN), false positive (FP), and false negative (FN) predictions of the model for the testing phase. This aided in easier comprehension and evaluation of the performance of the model on the testing dataset, thus presenting better methods of improvement.
+\subsection{Evaluation Strategy}
+
+The final evaluation of the model was performed on the remaining held out testing dataset. Similar to the validation dataset, it was decided that no augmentation should be performed to preserve the quality. Thus, the testing dataset contains a total of 968 images or 242 images per class for all 4 classes. These images are then used to predict the labels of the classes, which are CNV, DME, DRUSEN, and NORMAL or 0, 1, 2, and 3 respectively. These predicted labels along with their true labels are then stored in their respective lists so that a series of metrics can be built to support the evaluation of the model.
+
+In the previous progress report, there was only a 4x4 confusion matrix for all classes and the final accuracy number for the model. While this gave some insight to how well the model was performing in general, it was determined that more metrics were needed to highlight the kinds of errors the model was making. Thus, recall and precision were added to see whether the model was able to find instances of true positives well and whether it was able to identify true positives among all positive predictions. In the case of identifying retinal diseases, it is very important to detect all true positives (recall) rather than if positive predictions are actually positive (precision), but it is also important to have both values as high as possible. Which leads to the addition of the f-1 score, which helps in the evaluation of the tradeoff between recall and precision.
+
+After some further evaluation and as the model implementation improves, the global/averaged metrics started to converge, which made it harder to extract useful information from them. Therefore, a series of one-vs-rest metrics were added to enable the evaluation of the model on a per class basis. For each class, metrics such as precision, recall, and f-1 score were computed. In addition, a 2x2 confusion matrix and an ROC curve with AUC value were also added for each class. In combination, all of these per class metrics enabled a more granular evaluation of how the model performs for each class. As a result, this method was able to better reveal the biases of the model towards a certain class or the errors that it made for a certain class.
+
 
 \subsection{Quantitative Results}
 
-The following results are shown below:
-
+Using the training, validation, and evaluation methods highlighted in section 6.1 and 6.2 above, the model was able to produce a very impressive result of 99.69\% accuracy on the test dataset. The complete metrics are shown below:
 
 \begin{center}
     \includegraphics[width=1\linewidth]{Images/Final_Graph.png}
@@ -732,7 +723,7 @@ One thing that can be done to possibly improve the model and mitigate this bias 
 \begin{itemize}
     \item Worked on the initial image opening and storing of data.
     \item Implemented the image augmentation process.
-    \item Wrote sections 1, 3, 4, and 5 of the document and worked on overall presentation of Latex
+    \item Wrote sections 1, 3, 4, 5, and 7 of the document and worked on overall presentation of Latex
 \end{itemize}
 
 \subsection{Ishpreet}
@@ -740,7 +731,7 @@ One thing that can be done to possibly improve the model and mitigate this bias 
 \begin{itemize}
     \item Implemented the ResNet-50 neural network and its corresponding training, validation, and testing codes.
     \item Performed hyperparameter tuning and model optimizations.
-    \item Trained, validated, and tested the model. 
+    \item Trained, validated, and tested the model.
     \item Wrote sections 5.2.3, 5.2.4, 5.2.5, and 7.2.4 of the document.
 \end{itemize}
 
@@ -748,7 +739,9 @@ One thing that can be done to possibly improve the model and mitigate this bias 
 
 \begin{itemize}
     \item Worked on setting up the neural network and research for the start of the project.
-    \item Wrote sections 2 and 7 of the document.
+    \item Implemented the initial data preprocessing pipeline.
+    \item Implemented the evaluation metrics and confusion matrix plotting.
+    \item Wrote sections 2, 6, and 8 of the document.
 \end{itemize}
 
 \bibliography{custom}
