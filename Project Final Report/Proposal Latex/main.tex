@@ -283,7 +283,7 @@ Upon initialization, the first thing was to freeze all the layers but the last f
 
 While the developed model achieved respectable results during the progress report check-in, it left a great margin for improvement in the form of model optimizations and hyperparameter tuning, which were completed in this final stage. To begin, due to the size of the ResNet-50 and the large quantity of data, using Grid Search to narrow down the hyperparameter values, like the learning rate to fine-tune, would have been extremely costly in terms of runtime and computation power, making it not ideal. Therefore, learning rate scheduling was used to help fine-tune the model, as having a large starting learning rate value can dynamically decrease the learning rate in the context of the model's performance during model training. This allows for the model to arrive at the optimal learning independently while training on the large dataset without requiring the various runs that a fine-tuning operation like grid search would take.
 
-The learning rate scheduler CosineAnnealingLR was chosen because it decreases the learning rate according to a cosine curve, which allows for an overall smooth learning rate curve that keeps training stable, allowing for better generalization in the model. As well as the ability to rapidly decrease the learning rate in the beginning when it is usually still far from the optimal value, and slows down near the end when it nears the optimal value,  allowing for faster convergence. In addition to the learning rate scheduler, a prebuilt warmup scheduler function, GradualWarmupScheduler, created by a Kaggle user, was implemented. The warmup scheduler uses the first 5 epochs of the model as a kind of 'warm up', increasing the training rate slowly to the desired value, after which it hands it off to the normal Cosine scheduler to continue the learning rate scheduling. This warm-up helps stabilize the training of the model, which in turn allows for overall better generalization within the model, leading to better performance, and allows for a high beginning learning rate value to be set for the learning rate scheduler, which gives way for faster convergence. Lastly, to help further prevent overfitting, save computation time, and achieve faster convergence, early-stopping was implemented with the monitoring of the validation loss with a threshold value of 0.0001 and patience of 10.
+The learning rate scheduler CosineAnnealingLR was chosen because it decreases the learning rate according to a cosine curve, which allows for an overall smooth learning rate curve that keeps training stable, allowing for better generalization in the model. As well as the ability to rapidly decrease the learning rate in the beginning when it is usually still far from the optimal value, and slows down near the end when it nears the optimal value,  allowing for faster convergence. In addition to the learning rate scheduler, a prebuilt warmup scheduler function, GradualWarmupScheduler, created by Kaggle user aryankhatana, was implemented. The warmup scheduler uses the first 5 epochs of the model as a kind of 'warm up', increasing the training rate slowly to the desired value, after which it hands it off to the normal Cosine scheduler to continue the learning rate scheduling. This warm-up helps stabilize the training of the model, which in turn allows for overall better generalization within the model, leading to better performance, and allows for a high beginning learning rate value to be set for the learning rate scheduler, which gives way for faster convergence. Lastly, to help further prevent overfitting, save computation time, and achieve faster convergence, early-stopping was implemented with the monitoring of the validation loss with a threshold value of 0.0001 and patience of 10.
 
 \subsubsection{Criterion}
 
@@ -738,9 +738,10 @@ One thing that can be done to possibly improve the model and mitigate this bias 
 \subsection{Ishpreet}
 
 \begin{itemize}
-    \item Wrote the model training code and the ResNet-50 neural network.
-    \item Trained and tested the model.
-    \item Wrote section 6 of the document.
+    \item Implemented the ResNet-50 neural network and its corresponding training, validation, and testing codes.
+    \item Performed hyperparameter tuning and model optimizations.
+    \item Trained, validated, and tested the model. 
+    \item Wrote sections 5.2.3, 5.2.4, 5.2.5, and 7.2.4 of the document.
 \end{itemize}
 
 \subsection{Kenneth}
